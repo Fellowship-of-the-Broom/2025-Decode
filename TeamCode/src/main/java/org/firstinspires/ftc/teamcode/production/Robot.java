@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.production;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -17,6 +18,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Robot {
+    final double DESIRED_DISTANCE = 24.0; //  this is how close the camera should get to the target (inches)
+
+    private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
@@ -40,9 +44,10 @@ public class Robot {
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTagRed = null; // Used to hold the data for a detected AprilTag
     private AprilTagDetection desiredTagBlue = null;
-    public Robot(HardwareMap hardwareMap,Telemetry telemetry){
+    public Robot(HardwareMap hardwareMap,Telemetry telemetry, LinearOpMode opMode){
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
+        this.opMode = opMode;
 
     }
     public void init(){
@@ -74,8 +79,13 @@ public class Robot {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
     }
-    private void start(){
-        while (opModeIsActive())
+    public void start(){
+        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+
+        while (opMode.opModeIsActive())
         {
             targetFound = false;
             desiredTagRed = null;
@@ -105,10 +115,10 @@ public class Robot {
             }
 
             AprilTagDetection targetTag = null;
-            if(gamepad1.left_bumper && desiredTagBlue != null) {
+            if(opMode.gamepad1.left_bumper && desiredTagBlue != null) {
                 targetTag = desiredTagBlue;
                 targetFound = true;
-            } else if (gamepad1.right_bumper && desiredTagRed != null) {
+            } else if (opMode.gamepad1.right_bumper && desiredTagRed != null) {
                 targetTag = desiredTagRed;
                 targetFound = true;
             }
@@ -142,9 +152,9 @@ public class Robot {
             } else {
 
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-                drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-                strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-                turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+                drive  = -opMode.gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
+                strafe = -opMode.gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
+                turn   = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
                 telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
             telemetry.update();
@@ -154,6 +164,41 @@ public class Robot {
             sleep(10);
         }
     }
+    /**
+     * Move robot according to desired axes motions
+     * <p>
+     * Positive X is forward
+     * <p>
+     * Positive Y is strafe left
+     * <p>
+     * Positive Yaw is counter-clockwise
+     */
+    private void moveRobot(double x, double y, double yaw) {
+        // Calculate wheel powers.
+        double frontLeftPower    =  x - y - yaw;
+        double frontRightPower   =  x + y + yaw;
+        double backLeftPower     =  x + y - yaw;
+        double backRightPower    =  x - y + yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
+
+        if (max > 1.0) {
+            frontLeftPower /= max;
+            frontRightPower /= max;
+            backLeftPower /= max;
+            backRightPower /= max;
+        }
+
+        // Send powers to the wheels.
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
+    }
+
     private void    setManualExposure(int exposureMS, int gain) {
         // Wait for the camera to be open, then use the controls
 
