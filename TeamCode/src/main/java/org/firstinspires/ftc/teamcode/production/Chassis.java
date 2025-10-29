@@ -1,0 +1,125 @@
+package org.firstinspires.ftc.teamcode.production;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+public class Chassis {
+
+    private final LinearOpMode opMode;
+    private HardwareMap hardwareMap;
+    private Telemetry telemetry;
+    //  Drive = Error * Gain    Make th  //  Clip the turn speed to this max value (adjust for your robot)
+
+    private DcMotor frontLeftDrive = null;  //  Used to control the left front drive wheel
+    private DcMotor frontRightDrive = null;  //  Used to control the right front drive wheel
+    private DcMotor backLeftDrive = null;  //  Used to control the left back drive wheel
+    private DcMotor backRightDrive = null;  //  Used to control the right back drive wheel
+    public Chassis(LinearOpMode opMode){
+        this.hardwareMap = opMode.hardwareMap;
+        this.telemetry = opMode.telemetry;
+        this.opMode = opMode;
+
+    }
+    public void init(){
+
+
+
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must match the names assigned during the robot configuration.
+        // step (using the FTC Robot Controller app on the phone).
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "motor0");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "motor1");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "motor2");
+        backRightDrive = hardwareMap.get(DcMotor.class, "motor3");
+
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        // Wait for driver to press start
+        telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
+        telemetry.addData(">", "Touch START to start OpMode");
+        telemetry.update();
+    }
+    public void start(){
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+
+        while (opMode.opModeIsActive()) {
+
+
+            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
+            drive = -opMode.gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+            strafe = -opMode.gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
+            turn = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+            telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+
+            telemetry.update();
+
+            // Apply desired axes motions to the drivetrain.
+            moveRobot(drive, strafe, turn);
+            sleep(10);
+        }
+    }
+    /**
+     * Move robot according to desired axes motions
+     * <p>
+     * Positive X is forward
+     * <p>
+     * Positive Y is strafe left
+     * <p>
+     * Positive Yaw is counter-clockwise
+     */
+    private void moveRobot(double x, double y, double yaw) {
+        // Calculate wheel powers.
+        double frontLeftPower    =  x - y - yaw;
+        double frontRightPower   =  x + y + yaw;
+        double backLeftPower     =  x + y - yaw;
+        double backRightPower    =  x - y + yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
+        max = Math.max(max, Math.abs(backLeftPower));
+        max = Math.max(max, Math.abs(backRightPower));
+
+        if (max > 1.0) {
+            frontLeftPower /= max;
+            frontRightPower /= max;
+            backLeftPower /= max;
+            backRightPower /= max;
+        }
+
+        // Send powers to the wheels.
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
+    }
+
+    public final void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}

@@ -17,18 +17,30 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Robot {
+public class AprilTag {
+    final double DESIRED_DISTANCE = 24.0; //  this is how close the camera should get to the target (inches)
 
     private final LinearOpMode opMode;
-    private final Chassis chassis;
+    private HardwareMap hardwareMap;
+    private Telemetry telemetry;
+    //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
+    final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
+    final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
-    private final AprilTag AprilTag;
-
-
-
-    public Robot(HardwareMap hardwareMap,Telemetry telemetry, LinearOpMode opMode){
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
+    final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
+    private static final int TAG_BLUE = 20;
+    private static final int TAG_RED = 24;
+    private VisionPortal visionPortal;               // Used to manage the video source.
+    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private AprilTagDetection desiredTagRed = null; // Used to hold the data for a detected AprilTag
+    private AprilTagDetection desiredTagBlue = null;
+    public AprilTag(LinearOpMode opMode){
+        this.hardwareMap = opMode.hardwareMap;
+        this.telemetry = opMode.telemetry;
         this.opMode = opMode;
 
     }
@@ -36,22 +48,6 @@ public class Robot {
 
         // Initialize the Apriltag Detection process
         initAprilTag();
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must match the names assigned during the robot configuration.
-        // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive = hardwareMap.get(DcMotor.class, "motor0");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "motor1");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "motor2");
-        backRightDrive = hardwareMap.get(DcMotor.class, "motor3");
-
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         if (USE_WEBCAM)
             setManualExposure(6, 125);  // Use low exposure time to reduce motion blur
@@ -61,14 +57,13 @@ public class Robot {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
     }
-    public void start(){
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+    public void start() {
+        boolean targetFound = false;    // Set to true when an AprilTag target is detected
+        double drive = 0;        // Desired forward power/speed (-1 to +1)
+        double strafe = 0;        // Desired strafe power/speed (-1 to +1)
+        double turn = 0;        // Desired turning power/speed (-1 to +1)
 
-        while (opMode.opModeIsActive())
-        {
+        while (opMode.opModeIsActive()) {
             targetFound = false;
             desiredTagRed = null;
             desiredTagBlue = null;
@@ -97,7 +92,7 @@ public class Robot {
             }
 
             AprilTagDetection targetTag = null;
-            if(opMode.gamepad1.left_bumper && desiredTagBlue != null) {
+            if (opMode.gamepad1.left_bumper && desiredTagBlue != null) {
                 targetTag = desiredTagBlue;
                 targetFound = true;
             } else if (opMode.gamepad1.right_bumper && desiredTagRed != null) {
@@ -106,79 +101,36 @@ public class Robot {
             }
 
 
-
             // Tell the driver what we see, and what to do.
             if (targetFound) {
-                telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+                telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
                 telemetry.addData("Found", "ID %d (%s)", targetTag.id, targetTag.metadata.name);
-                telemetry.addData("Range",  "%5.1f inches", targetTag.ftcPose.range);
-                telemetry.addData("Bearing","%3.0f degrees", targetTag.ftcPose.bearing);
-                telemetry.addData("Yaw","%3.0f degrees", targetTag.ftcPose.yaw);
+                telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range);
+                telemetry.addData("Bearing", "%3.0f degrees", targetTag.ftcPose.bearing);
+                telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);
             } else {
-                telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+                telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
             }
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
             if (targetFound) {
 
                 // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-                double  rangeError      = (targetTag.ftcPose.range - DESIRED_DISTANCE);
-                double  headingError    = targetTag.ftcPose.bearing;
-                double  yawError        = targetTag.ftcPose.yaw;
+                double rangeError = (targetTag.ftcPose.range - DESIRED_DISTANCE);
+                double headingError = targetTag.ftcPose.bearing;
+                double yawError = targetTag.ftcPose.yaw;
                 // Use the speed and turn "gains" to calculate how we want the robot to move.
-                drive  = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                turn   = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+                drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-                telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            } else {
-
-                // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-                drive  = -opMode.gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-                strafe = -opMode.gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
-                turn   = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-                telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+                telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
             telemetry.update();
 
-            // Apply desired axes motions to the drivetrain.
-            moveRobot(drive, strafe, turn);
+
             sleep(10);
         }
-    }
-    /**
-     * Move robot according to desired axes motions
-     * <p>
-     * Positive X is forward
-     * <p>
-     * Positive Y is strafe left
-     * <p>
-     * Positive Yaw is counter-clockwise
-     */
-    private void moveRobot(double x, double y, double yaw) {
-        // Calculate wheel powers.
-        double frontLeftPower    =  x - y - yaw;
-        double frontRightPower   =  x + y + yaw;
-        double backLeftPower     =  x + y - yaw;
-        double backRightPower    =  x - y + yaw;
-
-        // Normalize wheel powers to be less than 1.0
-        double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
-        max = Math.max(max, Math.abs(backLeftPower));
-        max = Math.max(max, Math.abs(backRightPower));
-
-        if (max > 1.0) {
-            frontLeftPower /= max;
-            frontRightPower /= max;
-            backLeftPower /= max;
-            backRightPower /= max;
-        }
-
-        // Send powers to the wheels.
-        frontLeftDrive.setPower(frontLeftPower);
-        frontRightDrive.setPower(frontRightPower);
-        backLeftDrive.setPower(backLeftPower);
-        backRightDrive.setPower(backRightPower);
     }
 
     private void    setManualExposure(int exposureMS, int gain) {
