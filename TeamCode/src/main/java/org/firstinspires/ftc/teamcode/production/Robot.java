@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.production;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
@@ -17,20 +18,25 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.crypto.spec.OAEPParameterSpec;
+
 public class Robot {
 
     private final LinearOpMode opMode;
     private final Chassis chassis;
 
-    private final AprilTag AprilTag;
+    private final AprilTag aprilTag;
+    private final HardwareMap hardwareMap;
+    private final Telemetry telemetry;
 
 
-
-    public Robot(HardwareMap hardwareMap,Telemetry telemetry, LinearOpMode opMode){
-        this.hardwareMap = hardwareMap;
-        this.telemetry = telemetry;
+    public Robot(LinearOpMode opMode){
+        this.hardwareMap = opMode.hardwareMap;
+        this.telemetry = opMode.telemetry;
         this.opMode = opMode;
 
+        aprilTag = new AprilTag (opMode);
+        chassis = new Chassis (opMode);
     }
     public void init(){
 

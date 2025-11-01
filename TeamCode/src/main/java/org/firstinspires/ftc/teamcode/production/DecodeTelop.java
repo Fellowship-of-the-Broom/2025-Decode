@@ -96,7 +96,7 @@ public class DecodeTelop extends LinearOpMode
   // Used to hold the data for a detected AprilTag
 
     @Override public void runOpMode() {
-        Robot robot = new Robot(hardwareMap, telemetry, this);
+        Robot robot = new Robot(this);
         robot.init();
         waitForStart();
         robot.start();
