@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class Chassis implements Runnable{
 
     private final LinearOpMode opMode;
+    private final AprilTag aprilTag;
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     //  Drive = Error * Gain    Make th  //  Clip the turn speed to this max value (adjust for your robot)
@@ -28,10 +29,11 @@ public class Chassis implements Runnable{
     private DcMotor frontRightDrive = null;  //  Used to control the right front drive wheel
     private DcMotor backLeftDrive = null;  //  Used to control the left back drive wheel
     private DcMotor backRightDrive = null;  //  Used to control the right back drive wheel
-    public Chassis(LinearOpMode opMode){
+    public Chassis(LinearOpMode opMode, AprilTag aprilTag){
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
         this.opMode = opMode;
+        this.aprilTag = aprilTag;
 
     }
     public void init(){
@@ -80,6 +82,13 @@ public class Chassis implements Runnable{
 
             telemetry.update();
 
+            if ((drive == 0)&&(strafe == 0)&&(turn == 0)){
+                AprilTagValues aprilTagValues = aprilTag.checkAprilTag();
+
+                drive = aprilTagValues.drive;
+                strafe = aprilTagValues.strafe;
+                turn = aprilTagValues.turn;
+            }
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
             sleep(10);

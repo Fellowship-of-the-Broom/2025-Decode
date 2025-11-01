@@ -41,7 +41,7 @@ public class Robot {
         this.opMode = opMode;
 
         aprilTag = new AprilTag (opMode);
-        chassis = new Chassis (opMode);
+        chassis = new Chassis (opMode, aprilTag);
         intake = new Intake(opMode);
         launcher =new Launcher(opMode);
 
