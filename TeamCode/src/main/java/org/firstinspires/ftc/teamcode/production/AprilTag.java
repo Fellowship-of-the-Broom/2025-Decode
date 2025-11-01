@@ -57,80 +57,80 @@ public class AprilTag {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
     }
-    public void start() {
+    public AprilTagValues checkAprilTag() {
         boolean targetFound = false;    // Set to true when an AprilTag target is detected
         double drive = 0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0;        // Desired strafe power/speed (-1 to +1)
         double turn = 0;        // Desired turning power/speed (-1 to +1)
 
-        while (opMode.opModeIsActive()) {
-            targetFound = false;
-            desiredTagRed = null;
-            desiredTagBlue = null;
+        targetFound = false;
+        desiredTagRed = null;
+        desiredTagBlue = null;
 
-            // Step through the list of detected tags and look for a matching tag
-            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            for (AprilTagDetection detection : currentDetections) {
-                // Look to see if we have size info on this tag.
-                if (detection.metadata != null) {
-                    //  Check to see if we want to track towards this tag.
-                    if (detection.id == TAG_RED) {
-                        // Yes, we want to use this tag.
-                        desiredTagRed = detection;
-                    } else if (detection.id == TAG_BLUE) {
-                        // Yes, we want to use this tag.
-                        desiredTagBlue = detection;
-                    } else {
-                        // This tag is in the library, but we do not want to track it right now.
-                        telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                    }
-
+        // Step through the list of detected tags and look for a matching tag
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            // Look to see if we have size info on this tag.
+            if (detection.metadata != null) {
+                //  Check to see if we want to track towards this tag.
+                if (detection.id == TAG_RED) {
+                    // Yes, we want to use this tag.
+                    desiredTagRed = detection;
+                } else if (detection.id == TAG_BLUE) {
+                    // Yes, we want to use this tag.
+                    desiredTagBlue = detection;
                 } else {
-                    // This tag is NOT in the library, so we don't have enough information to track to it.
-                    telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    // This tag is in the library, but we do not want to track it right now.
+                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
                 }
-            }
 
-            AprilTagDetection targetTag = null;
-            if (opMode.gamepad1.left_bumper && desiredTagBlue != null) {
-                targetTag = desiredTagBlue;
-                targetFound = true;
-            } else if (opMode.gamepad1.right_bumper && desiredTagRed != null) {
-                targetTag = desiredTagRed;
-                targetFound = true;
-            }
-
-
-            // Tell the driver what we see, and what to do.
-            if (targetFound) {
-                telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
-                telemetry.addData("Found", "ID %d (%s)", targetTag.id, targetTag.metadata.name);
-                telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range);
-                telemetry.addData("Bearing", "%3.0f degrees", targetTag.ftcPose.bearing);
-                telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);
             } else {
-                telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+                // This tag is NOT in the library, so we don't have enough information to track to it.
+                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
             }
-
-            // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-            if (targetFound) {
-
-                // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-                double rangeError = (targetTag.ftcPose.range - DESIRED_DISTANCE);
-                double headingError = targetTag.ftcPose.bearing;
-                double yawError = targetTag.ftcPose.yaw;
-                // Use the speed and turn "gains" to calculate how we want the robot to move.
-                drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-
-                telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            }
-            telemetry.update();
-
-
-            sleep(10);
         }
+
+        AprilTagDetection targetTag = null;
+        if (opMode.gamepad1.left_bumper && desiredTagBlue != null) {
+            targetTag = desiredTagBlue;
+            targetFound = true;
+        } else if (opMode.gamepad1.right_bumper && desiredTagRed != null) {
+            targetTag = desiredTagRed;
+            targetFound = true;
+        }
+
+
+        // Tell the driver what we see, and what to do.
+        if (targetFound) {
+            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("Found", "ID %d (%s)", targetTag.id, targetTag.metadata.name);
+            telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range);
+            telemetry.addData("Bearing", "%3.0f degrees", targetTag.ftcPose.bearing);
+            telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);
+        } else {
+            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+        }
+
+        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+        if (targetFound) {
+
+            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+            double rangeError = (targetTag.ftcPose.range - DESIRED_DISTANCE);
+            double headingError = targetTag.ftcPose.bearing;
+            double yawError = targetTag.ftcPose.yaw;
+            // Use the speed and turn "gains" to calculate how we want the robot to move.
+            drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+        }
+        telemetry.update();
+
+
+        sleep(10);
+
+        return new AprilTagValues(drive, strafe, turn);
     }
 
     private void    setManualExposure(int exposureMS, int gain) {
