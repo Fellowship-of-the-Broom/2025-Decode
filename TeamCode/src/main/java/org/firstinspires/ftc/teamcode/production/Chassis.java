@@ -17,7 +17,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Chassis {
+public class Chassis implements Runnable{
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -59,7 +59,12 @@ public class Chassis {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
     }
-    public void start(){
+    public void start() {
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+    @Override
+    public void run(){
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
