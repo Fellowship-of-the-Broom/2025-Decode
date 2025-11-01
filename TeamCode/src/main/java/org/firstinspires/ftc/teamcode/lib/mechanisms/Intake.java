@@ -27,9 +27,16 @@ public class Intake implements Runnable {
             //1. read inputs
             //2. process
             //3. set outputs
-            this.motor.setDirection(DcMotorSimple.Direction.FORWARD);
             if (this.opMode.gamepad2.right_bumper) {
+                this.motor.setDirection(DcMotorSimple.Direction.FORWARD);
                 this.motor.setPower(POWER);
+
+            } else if(this.opMode.gamepad2.left_bumper) {
+                this.motor.setDirection(DcMotorSimple.Direction.REVERSE);
+                this.motor.setPower(POWER);
+
+            } else {
+                this.motor.setPower(0);
             }
         }
     }

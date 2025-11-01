@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Launcher {
+public class Launcher implements Runnable {
     private LinearOpMode opMode = null;
     private DcMotor flywheelMotor = null;
     private Servo hoodServo = null;
@@ -19,6 +19,12 @@ public class Launcher {
     }
 
     public void start() {
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    @Override
+    public void run() {
         while (this.opMode.opModeIsActive()) {
 
             // Flywheel motor
@@ -29,7 +35,7 @@ public class Launcher {
 
             //Hood servo
 
-
+            
 
         }
     }
