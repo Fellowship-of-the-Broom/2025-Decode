@@ -12,20 +12,20 @@ public class Launcher implements Runnable {
     private double power = 0;
     public Launcher(LinearOpMode OpMode) {
         opMode = OpMode;
-        this.flywheelMotor = opMode.hardwareMap.get(DcMotor.class, "Timmy");
-        this.hoodServo = opMode.hardwareMap.get(Servo.class, "Kimmy");
+      //  this.flywheelMotor = opMode.hardwareMap.get(DcMotor.class, "Timmy");
+    //    this.hoodServo = opMode.hardwareMap.get(Servo.class, "Kimmy");
         //Timmy and Kimmy are placeholders
 
     }
 
-    public void start() {
-        Thread thread = new Thread(this);
-        thread.start();
-    }
+//    public void start() {
+//        Thread thread = new Thread(this);
+//        thread.start();
+//    }
 
     @Override
     public void run() {
-        while (this.opMode.opModeIsActive()) {
+       // while (this.opMode.opModeIsActive()) {
 
             // Flywheel motor
             // Not sure about the trigger and how this is going to be used on the gamepad
@@ -35,8 +35,13 @@ public class Launcher implements Runnable {
 
             //Hood servo
 
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // throw new RuntimeException(e);
+            }
 
 
         }
     }
-}
+//}
