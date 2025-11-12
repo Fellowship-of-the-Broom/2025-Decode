@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AprilTag {
-    final double DESIRED_DISTANCE = 24.0;
-    final double DESIRED_HEADING = 12;//  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 42.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_HEADING = 12;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;

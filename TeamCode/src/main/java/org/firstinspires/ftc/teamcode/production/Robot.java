@@ -57,9 +57,9 @@ public class Robot {
 //       // aprilTag.start();
 //        chassis.start():
         while (this.opMode.opModeIsActive()){
-            //intake.run();
+            intake.run();
             chassis.run();
-            //launcher.run();
+            launcher.run();
 
             try {
                 Thread.sleep(50);

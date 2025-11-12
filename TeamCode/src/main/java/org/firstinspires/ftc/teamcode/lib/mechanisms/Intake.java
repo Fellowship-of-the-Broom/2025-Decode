@@ -38,11 +38,11 @@ public class Intake implements Runnable {
             } else {
                 this.motor.setPower(0);
             }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
+            //try {
+               // Thread.sleep(100);
+            //} catch (InterruptedException e) {
                // throw new RuntimeException(e);
-            }
+           // }
         }
     }
 //}

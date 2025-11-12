@@ -10,11 +10,13 @@ public class Launcher implements Runnable {
     private DcMotor flywheelMotor = null;
     private Servo hoodServo = null;
     private double power = 0;
+    private static final double ANGLE_3FT = 0.5;
+    private static final double manualIncrement = 20;
     public Launcher(LinearOpMode OpMode) {
         opMode = OpMode;
-      //  this.flywheelMotor = opMode.hardwareMap.get(DcMotor.class, "Timmy");
-    //    this.hoodServo = opMode.hardwareMap.get(Servo.class, "Kimmy");
-        //Timmy and Kimmy are placeholders
+
+        this.flywheelMotor = opMode.hardwareMap.get(DcMotor.class, "flywheelMotor");
+        this.hoodServo = opMode.hardwareMap.get(Servo.class, "hoodServo");
 
     }
 
@@ -35,11 +37,23 @@ public class Launcher implements Runnable {
 
             //Hood servo
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                // throw new RuntimeException(e);
+            if (opMode.gamepad1.left_bumper || opMode.gamepad1.right_bumper) {
+                hoodServo.setPosition(ANGLE_3FT);
             }
+
+            if(opMode.gamepad2.left_stick_y != 0){
+                double hoodAngle = hoodServo.getPosition() + (opMode.gamepad2.left_stick_y / manualIncrement);
+                hoodAngle = Math.max(hoodAngle, 0);
+                hoodAngle = Math.min(hoodAngle, 1);
+
+                hoodServo.setPosition(hoodAngle);
+            }
+
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
 
 
         }
