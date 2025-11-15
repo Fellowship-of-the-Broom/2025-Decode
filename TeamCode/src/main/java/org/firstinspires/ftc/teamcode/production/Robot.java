@@ -52,9 +52,22 @@ public class Robot {
 
     }
     public void start(){
-        launcher.start();
-        intake.start();
-       // aprilTag.start();
-        chassis.start();
+//        launcher.start();
+//        intake.start();
+//       // aprilTag.start();
+//        chassis.start():
+        while (this.opMode.opModeIsActive()){
+            intake.run();
+            chassis.run();
+            launcher.run();
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                //throw new RuntimeException(e);
+            }
+        }
+
     }
+
 }

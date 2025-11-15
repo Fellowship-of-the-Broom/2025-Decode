@@ -61,17 +61,17 @@ public class Chassis implements Runnable{
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
     }
-    public void start() {
-        Thread thread = new Thread(this);
-        thread.start();
-    }
+//    public void start() {
+//    Thread thread = new Thread(this);
+//        thread.start();
+//    }
     @Override
     public void run(){
         double  drive           = 0;        // Desired forward power/speed (-1 to +1)
         double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
         double  turn            = 0;        // Desired turning power/speed (-1 to +1)
 
-        while (opMode.opModeIsActive()) {
+       // while (opMode.opModeIsActive()) {
 
 
             // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
@@ -92,7 +92,7 @@ public class Chassis implements Runnable{
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
             sleep(10);
-        }
+        //}
     }
     /**
      * Move robot according to desired axes motions
