@@ -1,26 +1,18 @@
 package org.firstinspires.ftc.teamcode.production;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeIntakeImpl;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeLauncherImpl;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeTransferSystemImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.IntakeImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.Launcher;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.crypto.spec.OAEPParameterSpec;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.LauncherImpl;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystem;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystemImpl;
 
 public class Robot {
 
@@ -32,18 +24,28 @@ public class Robot {
     private final Telemetry telemetry;
     private final Launcher launcher;
     private final Intake intake;
+    private final TransferSystem transferSystem;
 
 
-
-    public Robot(LinearOpMode opMode){
+    public Robot(LinearOpMode opMode, boolean useReal){
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
         this.opMode = opMode;
 
         aprilTag = new AprilTag (opMode);
         chassis = new Chassis (opMode, aprilTag);
-        intake = new Intake(opMode);
-        launcher =new Launcher(opMode);
+        if (useReal) {
+            intake = new IntakeImpl(opMode);
+            launcher = new LauncherImpl(opMode);
+            transferSystem = new TransferSystemImpl(opMode);
+        }
+        else {
+            intake = new FakeIntakeImpl();
+            launcher = new FakeLauncherImpl();
+            transferSystem = new FakeTransferSystemImpl();
+        }
+
+
 
     }
     public void init(){
@@ -60,6 +62,7 @@ public class Robot {
             intake.run();
             chassis.run();
             launcher.run();
+            transferSystem.run();
 
             try {
                 Thread.sleep(50);

@@ -185,7 +185,7 @@ public class AprilTag {
         // Create the vision portal by using a builder.
         if (USE_WEBCAM) {
             visionPortal = new VisionPortal.Builder()
-                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam jimmy"))
+                    .setCamera(hardwareMap.get(WebcamName.class, "aprilTagCam"))
                     .addProcessor(aprilTag)
                     .build();
         } else {
