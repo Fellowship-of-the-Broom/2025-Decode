@@ -119,6 +119,7 @@ public class AprilTag {
             // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
             double rangeError = (targetTag.ftcPose.range - DESIRED_DISTANCE);
             double headingError = (targetTag.ftcPose.bearing - DESIRED_HEADING);
+
             double yawError = targetTag.ftcPose.yaw;
             // Use the speed and turn "gains" to calculate how we want the robot to move.
             drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
