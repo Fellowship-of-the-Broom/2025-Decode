@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AprilTag {
-    final double DESIRED_DISTANCE = 24.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 42.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_HEADING = 12;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -38,6 +39,7 @@ public class AprilTag {
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTagRed = null; // Used to hold the data for a detected AprilTag
     private AprilTagDetection desiredTagBlue = null;
+
     public AprilTag(LinearOpMode opMode){
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
@@ -50,7 +52,7 @@ public class AprilTag {
         initAprilTag();
 
         if (USE_WEBCAM)
-            setManualExposure(6, 125);  // Use low exposure time to reduce motion blur
+            setManualExposure(6, 175);  // Use low exposure time to reduce motion blur
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
@@ -116,7 +118,8 @@ public class AprilTag {
 
             // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
             double rangeError = (targetTag.ftcPose.range - DESIRED_DISTANCE);
-            double headingError = targetTag.ftcPose.bearing;
+            double headingError = (targetTag.ftcPose.bearing - DESIRED_HEADING);
+
             double yawError = targetTag.ftcPose.yaw;
             // Use the speed and turn "gains" to calculate how we want the robot to move.
             drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
@@ -183,7 +186,7 @@ public class AprilTag {
         // Create the vision portal by using a builder.
         if (USE_WEBCAM) {
             visionPortal = new VisionPortal.Builder()
-                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam jimmy"))
+                    .setCamera(hardwareMap.get(WebcamName.class, "aprilTagCam"))
                     .addProcessor(aprilTag)
                     .build();
         } else {
