@@ -20,7 +20,14 @@ public class TransferSystemImpl implements TransferSystem {
     }
     @Override
     public void run() {
-       if(opmode.gamepad2.a);
+
+        transferFinger.setDirection(Servo.Direction.FORWARD);
+
+        if(opMode.gamepad2.a){
+           transferFinger.setPosition(CLEAR_ANGLE);
+        } else {
+           transferFinger.setPosition(BLOCK_ANGLE);
+        }
     }
     public void stop() {
         transferFinger.setPosition(STOP_SPEED);
