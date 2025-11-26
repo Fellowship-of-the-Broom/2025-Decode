@@ -4,43 +4,26 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class TransferSystemImpl implements TransferSystem {
-    public static final double TRANSFER_WHEEL_SPEED = .85;
+    public static final double BLOCK_ANGLE = .85;
+    public static final double CLEAR_ANGLE = .85;
     private final double STOP_SPEED = 0.5;
     private LinearOpMode opMode = null;
 
 
 
-    private Servo transferWheel;
+    private Servo transferFinger;
 
     public TransferSystemImpl(LinearOpMode OpMode) {
-        opMode = OpMode;
+        this.opMode = OpMode;
 
-        this.transferWheel = opMode.hardwareMap.get(Servo.class, "transferWheel");
+        this.transferFinger = opMode.hardwareMap.get(Servo.class, "transferWheel");
     }
     @Override
     public void run() {
-        if (opMode.gamepad2.a){
-            this.forward(TRANSFER_WHEEL_SPEED);
-        }
-        if (opMode.gamepad2.left_bumper) {
-            this.reject(TRANSFER_WHEEL_SPEED);
-        }
+       if(opmode.gamepad2.a);
     }
-
-    public void forward(double speed) {
-        transferWheel.setDirection(Servo.Direction.FORWARD);
-        transferWheel.setPosition(speed);
-    }
-
-    public void reject(double speed) {
-        transferWheel.setDirection(Servo.Direction.REVERSE);
-        transferWheel.setPosition(speed);
-    }
-
-
-
     public void stop() {
-        transferWheel.setPosition(STOP_SPEED);
+        transferFinger.setPosition(STOP_SPEED);
     }
 }
 
