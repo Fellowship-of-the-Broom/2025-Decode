@@ -1,21 +1,10 @@
-package org.firstinspires.ftc.teamcode.production;
+package org.firstinspires.ftc.teamcode.lib.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Chassis implements Runnable{
 
@@ -110,12 +99,12 @@ public class Chassis implements Runnable{
      * <p>
      * Positive Yaw is counter-clockwise
      */
-    private void moveRobot(double x, double y, double yaw) {
+    public void moveRobot(double drive, double strafe, double turn) {
         // Calculate wheel powers.
-        double frontLeftPower    =  x - y - yaw;
-        double frontRightPower   =  x + y + yaw;
-        double backLeftPower     =  x + y - yaw;
-        double backRightPower    =  x - y + yaw;
+        double frontLeftPower    =  drive - strafe - turn;
+        double frontRightPower   =  drive + strafe + turn;
+        double backLeftPower     =  drive + strafe - turn;
+        double backRightPower    =  drive - strafe + turn;
 
         // Normalize wheel powers to be less than 1.0
         double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));

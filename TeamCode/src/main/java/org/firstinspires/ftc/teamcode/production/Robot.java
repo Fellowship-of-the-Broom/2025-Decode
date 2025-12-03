@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.production;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.AprilTag;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.Chassis;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeIntakeImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeLauncherImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeTransferSystemImpl;
@@ -73,4 +76,13 @@ public class Robot {
 
     }
 
+    public void rollout() {
+        this.chassis.moveRobot(0, .5,0);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            //throw new RuntimeException(e);
+        }
+        this.chassis.moveRobot(0,0,0);
+    }
 }
