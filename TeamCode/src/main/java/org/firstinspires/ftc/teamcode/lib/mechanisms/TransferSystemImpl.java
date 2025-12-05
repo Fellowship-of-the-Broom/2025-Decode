@@ -5,21 +5,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TransferSystemImpl implements TransferSystem {
-    public static final double BLOCK_ANGLE = 0;
-    public static final double CLEAR_ANGLE = 0;
+    public static final double BLOCK_ANGLE = .96;
+    public static final double CLEAR_ANGLE = .60;
     private final double STOP_SPEED = 0.5;
     private LinearOpMode opMode = null;
     private Servo transferGate;
     private GateStates gateState;
     private ElapsedTime timeElapsed = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-    private final double TIME_TO_CLOSE = 1500;
+    private final double TIME_TO_CLOSE = 0500;
 
     public TransferSystemImpl(LinearOpMode OpMode) {
         this.opMode = OpMode;
 
-        this.close();
 
         this.transferGate = opMode.hardwareMap.get(Servo.class, "transferWheel");
+
+        this.close();
+
     }
     @Override
     public void run() {
