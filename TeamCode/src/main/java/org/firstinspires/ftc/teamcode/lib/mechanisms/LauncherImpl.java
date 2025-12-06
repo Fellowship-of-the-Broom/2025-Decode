@@ -67,7 +67,7 @@ public class LauncherImpl implements Runnable, Launcher {
 
         //AUTO LOGIC
 
-        if (opMode.gamepad1.left_bumper || opMode.gamepad1.right_bumper) {
+        if (opMode.gamepad1.right_bumper) {
             //Set power to zero when the right trigger 2 is not pressed down
             power = 0;
             hoodAngle = ANGLE_3FT;
