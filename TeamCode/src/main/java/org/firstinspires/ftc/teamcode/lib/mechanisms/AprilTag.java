@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.production.AllianceColor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -38,6 +39,7 @@ public class AprilTag {
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTagRed = null; // Used to hold the data for a detected AprilTag
     private AprilTagDetection desiredTagBlue = null;
+    private AllianceColor allianceColor;
 
     public AprilTag(LinearOpMode opMode){
         this.hardwareMap = opMode.hardwareMap;
@@ -45,7 +47,8 @@ public class AprilTag {
         this.opMode = opMode;
 
     }
-    public void init(){
+    public void init(AllianceColor allianceColor){
+        this.allianceColor = allianceColor;
 
         // Initialize the Apriltag Detection process
         initAprilTag();
@@ -92,10 +95,14 @@ public class AprilTag {
         }
 
         AprilTagDetection targetTag = null;
-        if (opMode.gamepad1.left_bumper && desiredTagBlue != null) {
+        if ((opMode.gamepad1.right_bumper) &&
+                (desiredTagBlue != null) &&
+                (allianceColor == AllianceColor.BLUE_ALLIANCE)) {
             targetTag = desiredTagBlue;
             targetFound = true;
-        } else if (opMode.gamepad1.right_bumper && desiredTagRed != null) {
+        } else if ((opMode.gamepad1.right_bumper) &&
+                (desiredTagRed != null) &&
+                (allianceColor == AllianceColor.RED_ALLIANCE)) {
             targetTag = desiredTagRed;
             targetFound = true;
         }

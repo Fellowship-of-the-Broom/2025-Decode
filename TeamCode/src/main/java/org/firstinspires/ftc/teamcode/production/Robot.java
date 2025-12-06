@@ -50,9 +50,9 @@ public class Robot {
 
 
     }
-    public void init(AllianceColor blueAlliance){
+    public void init(AllianceColor allianceColor){
         chassis.init();
-        aprilTag.init();
+        aprilTag.init(allianceColor);
 
     }
     public void start(){
