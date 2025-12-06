@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LauncherImpl implements Runnable, Launcher {
     private static final double MANUAL_SPEED_HIGH = 1;
-    private static final double MANUAL_SPEED_LOW = 0.6;
+    private static final double MANUAL_SPEED_LOW = 0.1;
     private static final double ANGLE_3FT = 0.5;
     private static final double SPEED_3FT = 1;
     private static final double manualIncrementQuotient = 165; //Divides
@@ -19,7 +19,7 @@ public class LauncherImpl implements Runnable, Launcher {
     private Servo hoodServo = null;
     private double power = 0;
     private double hoodAngle = 0;
-    private double triggerThreshold = 0.5;
+    private double triggerThreshold = 0.8;
 
     public LauncherImpl(LinearOpMode opMode) {
 
@@ -57,8 +57,8 @@ public class LauncherImpl implements Runnable, Launcher {
 
         if (opMode.gamepad2.left_stick_y != 0) {
             hoodAngle = hoodServo.getPosition() + (opMode.gamepad2.left_stick_y / manualIncrementQuotient);
-            hoodAngle = Math.max(hoodAngle, 0);
-            hoodAngle = Math.min(hoodAngle, 1);
+            hoodAngle = Math.max(hoodAngle, 0.25);
+            hoodAngle = Math.min(hoodAngle, 0.75);
 
 
             telemetry.addData("hoodAngle", hoodAngle);
