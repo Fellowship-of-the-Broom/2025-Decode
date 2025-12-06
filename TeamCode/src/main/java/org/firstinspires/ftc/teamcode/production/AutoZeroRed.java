@@ -29,8 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.production;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /*
  * This OpMode illustrates using a camera to locate and drive towards a specific AprilTag.
@@ -72,20 +72,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *
  */
 
-@TeleOp(name="Omni Drive To AprilTag", group = "Concept")
-public class FroBotTelop extends LinearOpMode
+@Autonomous(name="RED AutoBots, Roll Out!", group = "Concept")
+public class AutoZeroRed extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
   // Used to hold the data for a detected AprilTag
+    //Place the robot at x y etc...
 
     @Override public void runOpMode() {
-        Robot robot = new Robot(this, false, AllianceColor.BLUE_ALLIANCE);
-        robot.init(AllianceColor.BLUE_ALLIANCE);
+        Robot robot = new Robot(this, true, AllianceColor.RED_ALLIANCE);
+        robot.init(AllianceColor.RED_ALLIANCE);
         waitForStart();
         robot.start();
+        robot.rollout();
     }
 
 

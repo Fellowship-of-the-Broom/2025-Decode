@@ -27,12 +27,14 @@ public class Robot {
     private final Launcher launcher;
     private final Intake intake;
     private final TransferSystem transferSystem;
+    private final AllianceColor allianceColor;
 
 
-    public Robot(LinearOpMode opMode, boolean useReal){
+    public Robot(LinearOpMode opMode, boolean useReal, AllianceColor allianceColor){
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
         this.opMode = opMode;
+        this.allianceColor = allianceColor;
 
         aprilTag = new AprilTag (opMode);
         chassis = new Chassis (opMode, aprilTag);
@@ -74,14 +76,44 @@ public class Robot {
         }
 
     }
-
-    public void rollout() {
-        this.chassis.moveRobot(0, .5,0);
+    public void autoSleep(long timeMS){
         try {
-            Thread.sleep(1000);
+            Thread.sleep(timeMS);
         } catch (InterruptedException e) {
             //throw new RuntimeException(e);
         }
+    }
+    public void rollout() {
+        this.chassis.moveRobot(0, .5,0);
+        autoSleep(1000);
         this.chassis.moveRobot(0,0,0);
+    }
+
+    public void autoMoveToAprilTagAndScore() {
+
+        //Defaults to blue alliance values
+        double strafeMultiplier = 1;
+        double turnMultiplier = 1;
+
+        if(allianceColor == AllianceColor.RED_ALLIANCE){
+            strafeMultiplier = -1;
+            turnMultiplier = -1;
+        }
+        //TODO Tune these values
+        
+        // Move forward to see april tag
+        this.chassis.moveRobot(1, 0,turnMultiplier * 1);
+        autoSleep(1000);
+        this.chassis.moveRobot(0,0,0);
+
+        // Turn to see april tag
+        // Detect april tag & drive to it
+        // Start launcher flywheel (and wait like ~3s)
+        // (Open gate
+        // Wait
+        // Close gate
+        // Wait ) x3
+        // Stop flywheel
+        // Possibly move back to start and/or out of the way
     }
 }

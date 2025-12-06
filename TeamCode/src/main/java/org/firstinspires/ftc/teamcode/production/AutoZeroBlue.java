@@ -72,17 +72,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  *
  */
 
-@Autonomous(name="AutoBots, Roll Out!", group = "Concept")
-public class AutoZERO extends LinearOpMode
+@Autonomous(name="BLUE AutoBots, Roll Out!", group = "Concept")
+public class AutoZeroBlue extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
   // Used to hold the data for a detected AprilTag
+    //Place the robot at x y etc...
 
     @Override public void runOpMode() {
-        Robot robot = new Robot(this, true);
+        Robot robot = new Robot(this, true, AllianceColor.BLUE_ALLIANCE);
         robot.init(AllianceColor.BLUE_ALLIANCE);
         waitForStart();
         robot.start();
