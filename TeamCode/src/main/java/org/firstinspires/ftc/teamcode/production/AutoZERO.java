@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.production;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /*
  * This OpMode illustrates using a camera to locate and drive towards a specific AprilTag.
@@ -84,7 +83,7 @@ public class AutoZERO extends LinearOpMode
 
     @Override public void runOpMode() {
         Robot robot = new Robot(this, true);
-        robot.init();
+        robot.init(AllianceColor.BLUE_ALLIANCE);
         waitForStart();
         robot.start();
         robot.rollout();

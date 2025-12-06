@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.production;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.AprilTag;
@@ -51,7 +50,7 @@ public class Robot {
 
 
     }
-    public void init(){
+    public void init(AllianceColor blueAlliance){
         chassis.init();
         aprilTag.init();
 

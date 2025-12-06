@@ -83,7 +83,7 @@ public class BilbotTelop extends LinearOpMode
 
     @Override public void runOpMode() {
         Robot robot = new Robot(this, true);
-        robot.init();
+        robot.init(AllianceColor.BLUE_ALLIANCE);
         waitForStart();
         robot.start();
     }

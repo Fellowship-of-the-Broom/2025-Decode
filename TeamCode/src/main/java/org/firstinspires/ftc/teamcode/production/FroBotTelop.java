@@ -83,7 +83,7 @@ public class FroBotTelop extends LinearOpMode
 
     @Override public void runOpMode() {
         Robot robot = new Robot(this, false);
-        robot.init();
+        robot.init(AllianceColor.BLUE_ALLIANCE);
         waitForStart();
         robot.start();
     }
