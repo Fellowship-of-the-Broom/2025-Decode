@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.production.AllianceColor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -36,8 +37,9 @@ public class AprilTag {
     private static final int TAG_RED = 24;
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private AprilTagDetection desiredTagRed = null; // Used to hold the data for a detected AprilTag
-    private AprilTagDetection desiredTagBlue = null;
+    private AllianceColor allianceColor;
+
+    private AprilTagDetection desiredTag;
 
     public AprilTag(LinearOpMode opMode){
         this.hardwareMap = opMode.hardwareMap;
@@ -45,7 +47,8 @@ public class AprilTag {
         this.opMode = opMode;
 
     }
-    public void init(){
+    public void init(AllianceColor allianceColor){
+        this.allianceColor = allianceColor;
 
         // Initialize the Apriltag Detection process
         initAprilTag();
@@ -64,8 +67,7 @@ public class AprilTag {
         double strafe = 0;        // Desired strafe power/speed (-1 to +1)
         double turn = 0;        // Desired turning power/speed (-1 to +1)
 
-        desiredTagRed = null;
-        desiredTagBlue = null;
+        desiredTag = null;
 
         // Step through the list of detected tags and look for a matching tag
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -73,12 +75,12 @@ public class AprilTag {
             // Look to see if we have size info on this tag.
             if (detection.metadata != null) {
                 //  Check to see if we want to track towards this tag.
-                if (detection.id == TAG_RED) {
+                if (detection.id == TAG_RED && allianceColor == AllianceColor.RED_ALLIANCE) {
                     // Yes, we want to use this tag.
-                    desiredTagRed = detection;
-                } else if (detection.id == TAG_BLUE) {
+                    desiredTag = detection;
+                } else if (detection.id == TAG_BLUE && allianceColor == AllianceColor.BLUE_ALLIANCE) {
                     // Yes, we want to use this tag.
-                    desiredTagBlue = detection;
+                    desiredTag = detection;
                 } else {
                     // This tag is in the library, but we do not want to track it right now.
                     telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
@@ -90,14 +92,12 @@ public class AprilTag {
             }
         }
 
-        AprilTagDetection targetTag = null;
-        if (opMode.gamepad1.left_bumper && desiredTagBlue != null) {
-            targetTag = desiredTagBlue;
-            targetFound = true;
-        } else if (opMode.gamepad1.right_bumper && desiredTagRed != null) {
-            targetTag = desiredTagRed;
+        AprilTagDetection targetTag = desiredTag;
+        if ((opMode.gamepad1.right_bumper) &&
+                (desiredTag != null)){
             targetFound = true;
         }
+
 
 
         // Tell the driver what we see, and what to do.
