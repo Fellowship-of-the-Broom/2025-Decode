@@ -55,7 +55,7 @@ public class Chassis implements Runnable{
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch START to start OpMode");
-        telemetry.update();
+        //telemetry.update();
     }
 //    public void start() {
 //    Thread thread = new Thread(this);
@@ -76,7 +76,7 @@ public class Chassis implements Runnable{
             turn = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
             telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
 
-            telemetry.update();
+            //telemetry.update();
 
             if ((drive == 0)&&(strafe == 0)&&(turn == 0)){
                 AprilTagValues aprilTagValues = aprilTag.checkAprilTag();

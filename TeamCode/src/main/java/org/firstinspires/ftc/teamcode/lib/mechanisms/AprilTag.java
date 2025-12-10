@@ -59,7 +59,7 @@ public class AprilTag {
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch START to start OpMode");
-        telemetry.update();
+        //telemetry.update();
     }
     public AprilTagValues checkAprilTag() {
         boolean targetFound = false;    // Set to true when an AprilTag target is detected
@@ -126,7 +126,7 @@ public class AprilTag {
 
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
         }
-        telemetry.update();
+        //telemetry.update();
 
 
         sleep(10);
@@ -144,13 +144,13 @@ public class AprilTag {
         // Make sure camera is streaming before we try to set the exposure controls
         if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
             telemetry.addData("Camera", "Waiting");
-            telemetry.update();
+            //telemetry.update();
             //while (!isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
             while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
                 sleep(20);
             }
             telemetry.addData("Camera", "Ready");
-            telemetry.update();
+            //telemetry.update();
         }
 
         // Set camera controls unless we are stopping.

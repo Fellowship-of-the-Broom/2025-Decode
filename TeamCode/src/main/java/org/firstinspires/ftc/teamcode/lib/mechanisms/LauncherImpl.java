@@ -2,20 +2,27 @@ package org.firstinspires.ftc.teamcode.lib.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LauncherImpl implements Runnable, Launcher {
     private static final double MANUAL_SPEED_HIGH = 1;
-    private static final double MANUAL_SPEED_LOW = 0.1;
-    private static final double ANGLE_3FT = 0.5;
+    private static final double MANUAL_SPEED_LOW = 0.5;
+    private static final double ANGLE_3FT = 0.1;
     private static final double SPEED_3FT = 1;
     private static final double manualIncrementQuotient = 165; //Divides
+    private static final double FAR_LAUNCHER_SPEED = 0.725;
+    private static final double FAR_HOOD_ANGLE =  0.1;
+    public static final double MINIMUM_HOOD_ANGLE = 0.0790;
+    public static final double MAXIMUM_HOOD_ANGLE = 0.1157;
     private final Telemetry telemetry;
     private LinearOpMode opMode = null;
     private DcMotor flywheelMotor = null;
+   // private DcMotorEx flywheelMotor = null;
     private Servo hoodServo = null;
     private double power = 0;
     private double hoodAngle = 0;
@@ -27,8 +34,11 @@ public class LauncherImpl implements Runnable, Launcher {
         this.telemetry = opMode.telemetry;
 
         this.flywheelMotor = opMode.hardwareMap.get(DcMotor.class, "flywheelMotor");
+        this.flywheelMotor = opMode.hardwareMap.get(DcMotorEx.class, "flywheelMotor");
+
         this.hoodServo = opMode.hardwareMap.get(Servo.class, "hoodServo");
 
+        //flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients());
     }
 
 //    public void start() {
@@ -57,28 +67,40 @@ public class LauncherImpl implements Runnable, Launcher {
 
         if (opMode.gamepad2.left_stick_y != 0) {
             hoodAngle = hoodServo.getPosition() + (opMode.gamepad2.left_stick_y / manualIncrementQuotient);
-            hoodAngle = Math.max(hoodAngle, 0.25);
-            hoodAngle = Math.min(hoodAngle, 0.75);
+            hoodAngle = Math.max(hoodAngle, MINIMUM_HOOD_ANGLE);
+            hoodAngle = Math.min(hoodAngle, MAXIMUM_HOOD_ANGLE);
+            //.079 Max
+            //.0.1157 Min
 
 
-            telemetry.addData("hoodAngle", hoodAngle);
-            telemetry.addData("hoodservo", hoodServo.getPosition());
+
         }
+
+
 
         //AUTO LOGIC
 
-        if (opMode.gamepad1.right_bumper) {
+//        if (opMode.gamepad1.right_bumper) {
+//            //Set power to zero when the right trigger 2 is not pressed down
+//            power = 0;
+//            hoodAngle = ANGLE_3FT;
+//            if (this.opMode.gamepad2.right_trigger > 0) {
+//                power = SPEED_3FT;
+//            }
+//        }
+
+        if (opMode.gamepad1.right_bumper || opMode.gamepad2.right_bumper) {
             //Set power to zero when the right trigger 2 is not pressed down
-            power = 0;
-            hoodAngle = ANGLE_3FT;
-            if (this.opMode.gamepad2.right_trigger > 0) {
-                power = SPEED_3FT;
-            }
+            power = FAR_LAUNCHER_SPEED;
+            hoodAngle = FAR_HOOD_ANGLE;
         }
 
         this.flywheelMotor.setPower(power);
         hoodServo.setPosition(hoodAngle);
 
+        telemetry.addData("hoodAngle", hoodAngle);
+        telemetry.addData("hoodservo", hoodServo.getPosition());
+        telemetry.update();
         //yayayayaya good yes code josh waz here
 
 //            try {

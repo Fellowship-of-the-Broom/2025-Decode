@@ -83,7 +83,7 @@ public class AllianceBlueTeleop extends LinearOpMode
   // Used to hold the data for a detected AprilTag
 
     @Override public void runOpMode() {
-        Robot robot = new Robot(this, true);
+        Robot robot = new Robot(this, true, AllianceColor.BLUE_ALLIANCE);
         robot.init(AllianceColor.BLUE_ALLIANCE);
         waitForStart();
         robot.start();

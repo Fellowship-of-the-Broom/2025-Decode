@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TransferSystemImpl implements TransferSystem {
-    public static final double BLOCK_ANGLE = .35;
+    public static final double BLOCK_ANGLE = .5;
     public static final double CLEAR_ANGLE = .04;
     private final double STOP_SPEED = 0.5;
     private LinearOpMode opMode = null;
