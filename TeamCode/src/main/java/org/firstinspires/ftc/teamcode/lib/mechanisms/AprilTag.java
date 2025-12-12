@@ -18,8 +18,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AprilTag {
-    final double DESIRED_DISTANCE = 42.0; //  this is how close the camera should get to the target (inches)
-    final double DESIRED_HEADING = 12;
+
+    /* RED APPROX.
+    Distance =
+    Heading =
+    Yaw =
+     */
+    final double DESIRED_DISTANCE = 130.8; // this is how close the camera should get to the target (inches)
+    final double DESIRED_HEADING = 4; // Defaults are for Blue alliance
+    final double DESIRED_YAW = 27;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -48,6 +55,9 @@ public class AprilTag {
 
     }
     public void init(AllianceColor allianceColor){
+
+
+
         this.allianceColor = allianceColor;
 
         // Initialize the Apriltag Detection process
@@ -102,29 +112,40 @@ public class AprilTag {
 
         // Tell the driver what we see, and what to do.
         if (targetFound) {
-            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
-            telemetry.addData("Found", "ID %d (%s)", targetTag.id, targetTag.metadata.name);
-            telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range);
-            telemetry.addData("Bearing", "%3.0f degrees", targetTag.ftcPose.bearing);
-            telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);
+            //telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+            //telemetry.addData("Found", "ID %d (%s)", targetTag.id, targetTag.metadata.name);
+            telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range); //130.3
+            telemetry.addData("Heading", "%3.0f degrees", targetTag.ftcPose.bearing); //4
+            telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);//28
+            telemetry.update();
         } else {
-            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+            //telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
         }
 
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
         if (targetFound) {
 
-            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-            double rangeError = (targetTag.ftcPose.range - DESIRED_DISTANCE);
+            double rangeError = -(targetTag.ftcPose.range - DESIRED_DISTANCE);
             double headingError = (targetTag.ftcPose.bearing - DESIRED_HEADING);
-            double yawError = targetTag.ftcPose.yaw;
+            double yawError = -(targetTag.ftcPose.yaw - DESIRED_YAW);
+
+
+            if(allianceColor == AllianceColor.RED_ALLIANCE){
+              //rangeError = -(targetTag.ftcPose.range - DESIRED_DISTANCE);
+                headingError = (targetTag.ftcPose.bearing + DESIRED_HEADING);
+                yawError = -(targetTag.ftcPose.yaw + DESIRED_YAW);
+            }
+
+
+            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+
 
             // Use the speed and turn "gains" to calculate how we want the robot to move.
             drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
-            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+            //telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
         }
         //telemetry.update();
 
@@ -143,13 +164,13 @@ public class AprilTag {
 
         // Make sure camera is streaming before we try to set the exposure controls
         if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Camera", "Waiting");
+            //telemetry.addData("Camera", "Waiting");
             //telemetry.update();
             //while (!isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
             while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
                 sleep(20);
             }
-            telemetry.addData("Camera", "Ready");
+            //telemetry.addData("Camera", "Ready");
             //telemetry.update();
         }
 
@@ -189,7 +210,7 @@ public class AprilTag {
                     .build();
         } else {
             visionPortal = new VisionPortal.Builder()
-                    .setCamera(BuiltinCameraDirection.FRONT)
+                    .setCamera(BuiltinCameraDirection.BACK)
                     .addProcessor(aprilTag)
                     .build();
         }

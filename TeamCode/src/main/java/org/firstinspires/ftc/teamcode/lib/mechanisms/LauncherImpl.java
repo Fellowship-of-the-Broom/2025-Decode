@@ -89,7 +89,7 @@ public class LauncherImpl implements Runnable, Launcher {
 //            }
 //        }
 
-        if (opMode.gamepad1.right_bumper || opMode.gamepad2.right_bumper) {
+        if (/*opMode.gamepad1.right_bumper ||*/ opMode.gamepad2.right_bumper) {
             //Set power to zero when the right trigger 2 is not pressed down
             power = FAR_LAUNCHER_SPEED;
             hoodAngle = FAR_HOOD_ANGLE;
@@ -100,7 +100,7 @@ public class LauncherImpl implements Runnable, Launcher {
 
         telemetry.addData("hoodAngle", hoodAngle);
         telemetry.addData("hoodservo", hoodServo.getPosition());
-        telemetry.update();
+//        telemetry.update();
         //yayayayaya good yes code josh waz here
 
 //            try {
