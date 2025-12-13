@@ -29,7 +29,7 @@ public class IntakeImpl implements Runnable, Intake {
             //2. process
             //3. set outputs
            this.motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-           if (this.opMode.gamepad2.right_bumper) {
+           if (this.opMode.gamepad2.x) {
                 this.motor.setDirection(DcMotorSimple.Direction.FORWARD);
                 this.motor.setPower(POWER);
 

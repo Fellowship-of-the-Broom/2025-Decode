@@ -1,23 +1,12 @@
-package org.firstinspires.ftc.teamcode.production;
+package org.firstinspires.ftc.teamcode.lib.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-public class Chassis implements Runnable{
+public class Chassis implements Runnable {
 
     private final LinearOpMode opMode;
     private final AprilTag aprilTag;
@@ -29,15 +18,16 @@ public class Chassis implements Runnable{
     private DcMotor frontRightDrive = null;  //  Used to control the right front drive wheel
     private DcMotor backLeftDrive = null;  //  Used to control the left back drive wheel
     private DcMotor backRightDrive = null;  //  Used to control the right back drive wheel
-    public Chassis(LinearOpMode opMode, AprilTag aprilTag){
+
+    public Chassis(LinearOpMode opMode, AprilTag aprilTag) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
         this.opMode = opMode;
         this.aprilTag = aprilTag;
 
     }
-    public void init(){
 
+    public void init() {
 
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -62,45 +52,50 @@ public class Chassis implements Runnable{
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
 
-
         // Wait for driver to press start
-        telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch START to start OpMode");
-        telemetry.update();
+        //telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
+        //telemetry.addData(">", "Touch START to start OpMode");
+        //telemetry.update();
     }
-//    public void start() {
+
+    //    public void start() {
 //    Thread thread = new Thread(this);
 //        thread.start();
 //    }
     @Override
-    public void run(){
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1)
-        double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+    public void run() {
+        double drive = 0;        // Desired forward power/speed (-1 to +1)
+        double strafe = 0;        // Desired strafe power/speed (-1 to +1)
+        double turn = 0;        // Desired turning power/speed (-1 to +1)
 
-       // while (opMode.opModeIsActive()) {
+        // while (opMode.opModeIsActive()) {
 
+        drive = -opMode.gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+        strafe = -opMode.gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
+        turn = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
 
-            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-            drive = -opMode.gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
-            strafe = -opMode.gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
-            turn = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-            telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+        if (opMode.gamepad1.b) {
+            drive = -drive;
+            strafe = -strafe;
+        }
 
-            telemetry.update();
+        telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
 
-            if ((drive == 0)&&(strafe == 0)&&(turn == 0)){
-                AprilTagValues aprilTagValues = aprilTag.checkAprilTag();
+        //telemetry.update();
 
-                drive = aprilTagValues.drive;
-                strafe = aprilTagValues.strafe;
-                turn = aprilTagValues.turn;
-            }
-            // Apply desired axes motions to the drivetrain.
-            moveRobot(drive, strafe, turn);
-            sleep(10);
+        if ((drive == 0) && (strafe == 0) && (turn == 0)) {
+            AprilTagValues aprilTagValues = aprilTag.checkAprilTag();
+
+            drive = aprilTagValues.drive;
+            strafe = aprilTagValues.strafe;
+            turn = aprilTagValues.turn;
+        }
+        // Apply desired axes motions to the drivetrain.
+        moveRobot(drive, strafe, turn);
+        sleep(10);
         //}
     }
+
     /**
      * Move robot according to desired axes motions
      * <p>
@@ -110,12 +105,12 @@ public class Chassis implements Runnable{
      * <p>
      * Positive Yaw is counter-clockwise
      */
-    private void moveRobot(double x, double y, double yaw) {
+    public void moveRobot(double drive, double strafe, double turn) {
         // Calculate wheel powers.
-        double frontLeftPower    =  x - y - yaw;
-        double frontRightPower   =  x + y + yaw;
-        double backLeftPower     =  x + y - yaw;
-        double backRightPower    =  x - y + yaw;
+        double frontLeftPower = drive - strafe - turn;
+        double frontRightPower = drive + strafe + turn;
+        double backLeftPower = drive + strafe - turn;
+        double backRightPower = drive - strafe + turn;
 
         // Normalize wheel powers to be less than 1.0
         double max = Math.max(Math.abs(frontLeftPower), Math.abs(frontRightPower));
