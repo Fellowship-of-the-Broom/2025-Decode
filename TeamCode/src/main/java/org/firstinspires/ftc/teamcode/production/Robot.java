@@ -25,9 +25,10 @@ public class Robot {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Launcher launcher;
-    //private final Intake intake;
+    private final Intake intake;
     private final TransferSystem transferSystem;
     private final AllianceColor allianceColor;
+    private boolean runChassis = true;
 
 
     public Robot(LinearOpMode opMode, boolean useReal, AllianceColor allianceColor){
@@ -39,12 +40,12 @@ public class Robot {
         aprilTag = new AprilTag (opMode);
         chassis = new Chassis (opMode, aprilTag);
         if (useReal) {
-           // intake = new IntakeImpl(opMode);
+            intake = new IntakeImpl(opMode);
             launcher = new LauncherImpl(opMode);
             transferSystem = new TransferSystemImpl(opMode);
         }
         else {
-            //intake = new FakeIntakeImpl();
+            intake = new FakeIntakeImpl();
             launcher = new FakeLauncherImpl();
             transferSystem = new FakeTransferSystemImpl();
         }
@@ -63,10 +64,15 @@ public class Robot {
 //       // aprilTag.start();
 //        chassis.start():
         while (this.opMode.opModeIsActive()){
-            //intake.run();
-            chassis.run();
+            intake.run();
+
+            if(runChassis){
+                chassis.run();
+            }
+
             launcher.run();
             transferSystem.run();
+
 
             try {
                 Thread.sleep(50);
@@ -76,6 +82,8 @@ public class Robot {
         }
 
     }
+
+
     public void autoSleep(long timeMS){
         try {
             Thread.sleep(timeMS);
@@ -107,6 +115,9 @@ public class Robot {
         //TODO Tune these values
         
         // Move forward to see april tag
+
+        runChassis = false;
+
         this.chassis.moveRobot(1, .5 * strafeMultiplier,0);
         autoSleep(1000);
         this.chassis.moveRobot(0,1 * strafeMultiplier,0);
@@ -117,15 +128,27 @@ public class Robot {
         this.chassis.moveRobot(0,0,-0.5 * turnMultiplier);
         autoSleep(100);
 
+        // Start Launcher
+
+        ((LauncherImpl)launcher).autoFarLaunch = true;
+
         // Detect april tag & drive to it
+
+        runChassis = true;
 
         aprilTag.autoAprilTagDetect = true;
         autoSleep(10000);
         aprilTag.autoAprilTagDetect = false;
 
+        ((TransferSystemImpl)transferSystem).autoOpen = true;
+        autoSleep(175);
+        ((TransferSystemImpl)transferSystem).autoOpen = false;
+        autoSleep(1000);
 
-
-        ((LauncherImpl)launcher).autoFarLaunch = true;
+        ((TransferSystemImpl)transferSystem).autoOpen = true;
+        autoSleep(175);
+        ((TransferSystemImpl)transferSystem).autoOpen = false;
+        autoSleep(1000);
 
         ((TransferSystemImpl)transferSystem).autoOpen = true;
         autoSleep(175);
