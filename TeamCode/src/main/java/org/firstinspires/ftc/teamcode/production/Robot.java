@@ -25,7 +25,7 @@ public class Robot {
     private final HardwareMap hardwareMap;
     private final Telemetry telemetry;
     private final Launcher launcher;
-    private final Intake intake;
+    //private final Intake intake;
     private final TransferSystem transferSystem;
     private final AllianceColor allianceColor;
 
@@ -39,12 +39,12 @@ public class Robot {
         aprilTag = new AprilTag (opMode);
         chassis = new Chassis (opMode, aprilTag);
         if (useReal) {
-            intake = new IntakeImpl(opMode);
+           // intake = new IntakeImpl(opMode);
             launcher = new LauncherImpl(opMode);
             transferSystem = new TransferSystemImpl(opMode);
         }
         else {
-            intake = new FakeIntakeImpl();
+            //intake = new FakeIntakeImpl();
             launcher = new FakeLauncherImpl();
             transferSystem = new FakeTransferSystemImpl();
         }
@@ -63,7 +63,7 @@ public class Robot {
 //       // aprilTag.start();
 //        chassis.start():
         while (this.opMode.opModeIsActive()){
-            intake.run();
+            //intake.run();
             chassis.run();
             launcher.run();
             transferSystem.run();
@@ -83,37 +83,57 @@ public class Robot {
             //throw new RuntimeException(e);
         }
     }
+
+    double strafeMultiplier = 1;
+    double turnMultiplier = 1;
+
     public void rollout() {
-        this.chassis.moveRobot(0, .5,0);
-        autoSleep(1000);
-        this.chassis.moveRobot(0,0,0);
-    }
-
-    public void autoMoveToAprilTagAndScore() {
-
-        //Defaults to blue alliance values
-        double strafeMultiplier = 1;
-        double turnMultiplier = 1;
 
         if(allianceColor == AllianceColor.RED_ALLIANCE){
             strafeMultiplier = -1;
             turnMultiplier = -1;
         }
+
+        this.chassis.moveRobot(1, 0,0);
+        autoSleep(50);
+        this.chassis.moveRobot(0,-1 * strafeMultiplier,0);
+        autoSleep(500);
+    }
+
+    public void autoMoveToAprilTagAndScore() {
+
+        //Defaults to blue alliance values
+
         //TODO Tune these values
         
         // Move forward to see april tag
-        this.chassis.moveRobot(1, 0,turnMultiplier * 1);
+        this.chassis.moveRobot(1, .5 * strafeMultiplier,0);
         autoSleep(1000);
-        this.chassis.moveRobot(0,0,0);
+        this.chassis.moveRobot(0,1 * strafeMultiplier,0);
+        autoSleep(1000);
 
-        // Turn to see april tag
+        //Turn to see april tag
+
+        this.chassis.moveRobot(0,0,-0.5 * turnMultiplier);
+        autoSleep(100);
+
         // Detect april tag & drive to it
-        // Start launcher flywheel (and wait like ~3s)
-        // (Open gate
-        // Wait
-        // Close gate
-        // Wait ) x3
-        // Stop flywheel
+
+        aprilTag.autoAprilTagDetect = true;
+        autoSleep(10000);
+        aprilTag.autoAprilTagDetect = false;
+
+
+
+        ((LauncherImpl)launcher).autoFarLaunch = true;
+
+        ((TransferSystemImpl)transferSystem).autoOpen = true;
+        autoSleep(175);
+        ((TransferSystemImpl)transferSystem).autoOpen = false;
+        autoSleep(1000);
+
+        ((LauncherImpl)launcher).autoFarLaunch = false;
+
         // Possibly move back to start and/or out of the way
     }
 }

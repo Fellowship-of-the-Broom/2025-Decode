@@ -26,7 +26,7 @@ public class AprilTag {
      */
     final double DESIRED_DISTANCE = 130.8; // this is how close the camera should get to the target (inches)
     final double DESIRED_HEADING = 4; // Defaults are for Blue alliance
-    final double DESIRED_YAW = 27;
+    final double DESIRED_YAW = 17;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -47,6 +47,7 @@ public class AprilTag {
     private AllianceColor allianceColor;
 
     private AprilTagDetection desiredTag;
+    public boolean autoAprilTagDetect;
 
     public AprilTag(LinearOpMode opMode){
         this.hardwareMap = opMode.hardwareMap;
@@ -103,7 +104,7 @@ public class AprilTag {
         }
 
         AprilTagDetection targetTag = desiredTag;
-        if ((opMode.gamepad1.right_bumper) &&
+        if ((opMode.gamepad1.right_bumper || autoAprilTagDetect) &&
                 (desiredTag != null)){
             targetFound = true;
         }

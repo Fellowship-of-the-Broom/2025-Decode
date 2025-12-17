@@ -13,6 +13,7 @@ public class TransferSystemImpl implements TransferSystem {
     private GateStates gateState;
     private ElapsedTime timeElapsed = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     private final double TIME_TO_CLOSE = 175;
+    public boolean autoOpen;
 
     public TransferSystemImpl(LinearOpMode OpMode) {
         this.opMode = OpMode;
@@ -28,10 +29,10 @@ public class TransferSystemImpl implements TransferSystem {
 
         transferGate.setDirection(Servo.Direction.FORWARD);
 
-        if(opMode.gamepad2.a){
+        if(opMode.gamepad2.a || autoOpen){
             this.open();
         }
-        else if (timeElapsed.time() >= TIME_TO_CLOSE){
+        else if ((timeElapsed.time() >= TIME_TO_CLOSE) || !autoOpen){
             this.close();
         }
     }

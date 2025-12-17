@@ -15,7 +15,7 @@ public class LauncherImpl implements Runnable, Launcher {
     private static final double ANGLE_3FT = 0.1;
     private static final double SPEED_3FT = 1;
     private static final double manualIncrementQuotient = 165; //Divides
-    private static final double FAR_LAUNCHER_SPEED = 0.725;
+    private static final double FAR_LAUNCHER_SPEED = 0.700;
     private static final double FAR_HOOD_ANGLE =  0.1;
     public static final double MINIMUM_HOOD_ANGLE = 0.0790;
     public static final double MAXIMUM_HOOD_ANGLE = 0.1157;
@@ -27,6 +27,7 @@ public class LauncherImpl implements Runnable, Launcher {
     private double power = 0;
     private double hoodAngle = 0;
     private double triggerThreshold = 0.8;
+    public boolean autoFarLaunch;
 
     public LauncherImpl(LinearOpMode opMode) {
 
@@ -89,7 +90,7 @@ public class LauncherImpl implements Runnable, Launcher {
 //            }
 //        }
 
-        if (/*opMode.gamepad1.right_bumper ||*/ opMode.gamepad2.right_bumper) {
+        if (/*opMode.gamepad1.right_bumper ||*/ opMode.gamepad2.right_bumper || autoFarLaunch) {
             //Set power to zero when the right trigger 2 is not pressed down
             power = FAR_LAUNCHER_SPEED;
             hoodAngle = FAR_HOOD_ANGLE;

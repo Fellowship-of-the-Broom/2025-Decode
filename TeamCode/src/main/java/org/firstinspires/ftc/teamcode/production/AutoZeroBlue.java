@@ -86,7 +86,7 @@ public class AutoZeroBlue extends LinearOpMode
         Robot robot = new Robot(this, true, AllianceColor.BLUE_ALLIANCE);
         robot.init(AllianceColor.BLUE_ALLIANCE);
         waitForStart();
-        robot.start();
+        //robot.start();
         robot.rollout();
     }
 
