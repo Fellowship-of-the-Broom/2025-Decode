@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.lib.mechanisms.LauncherImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystem;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystemImpl;
 
-public class Robot {
+public class Robot implements Runnable{
 
     private final LinearOpMode opMode;
     private final Chassis chassis;
@@ -39,6 +39,8 @@ public class Robot {
 
         aprilTag = new AprilTag (opMode);
         chassis = new Chassis (opMode, aprilTag);
+
+        //TODO reverse intake to correct directions (not in this file tho)
         if (useReal) {
             intake = new IntakeImpl(opMode);
             launcher = new LauncherImpl(opMode);
@@ -103,7 +105,9 @@ public class Robot {
         }
 
         this.chassis.moveRobot(1, 0,0);
-        autoSleep(50);
+        autoSleep(300);
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(200);
         this.chassis.moveRobot(0,-1 * strafeMultiplier,0);
         autoSleep(500);
     }
@@ -118,10 +122,10 @@ public class Robot {
 
         runChassis = false;
 
-        this.chassis.moveRobot(1, .5 * strafeMultiplier,0);
+        this.chassis.moveRobot(1, 0,0);
         autoSleep(1000);
-        this.chassis.moveRobot(0,1 * strafeMultiplier,0);
-        autoSleep(1000);
+        this.chassis.moveRobot(0,-1 * strafeMultiplier,0);
+        autoSleep(500);
 
         //Turn to see april tag
 
@@ -158,5 +162,10 @@ public class Robot {
         ((LauncherImpl)launcher).autoFarLaunch = false;
 
         // Possibly move back to start and/or out of the way
+    }
+
+    @Override
+    public void run() {
+        //TODO APRIL TAGS!!!!
     }
 }

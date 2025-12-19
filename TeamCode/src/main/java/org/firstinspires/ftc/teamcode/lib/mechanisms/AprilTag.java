@@ -26,7 +26,7 @@ public class AprilTag {
      */
     final double DESIRED_DISTANCE = 130.8; // this is how close the camera should get to the target (inches)
     final double DESIRED_HEADING = 4; // Defaults are for Blue alliance
-    final double DESIRED_YAW = 17;
+    final double DESIRED_YAW = 20;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
