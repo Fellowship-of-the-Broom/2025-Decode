@@ -17,6 +17,9 @@ public class LauncherImpl implements Runnable, Launcher {
     private static final double manualIncrementQuotient = 165; //Divides
     private static final double FAR_LAUNCHER_SPEED = 0.700;
     private static final double FAR_HOOD_ANGLE =  0.1;
+
+    private static final double CLOSE_LAUNCHER_SPEED = 0.700;
+    private static final double CLOSE_HOOD_ANGLE =  0.1;
     public static final double MINIMUM_HOOD_ANGLE = 0.0790;
     public static final double MAXIMUM_HOOD_ANGLE = 0.1157;
     private final Telemetry telemetry;
@@ -90,10 +93,17 @@ public class LauncherImpl implements Runnable, Launcher {
 //            }
 //        }
 
-        if (/*opMode.gamepad1.right_bumper ||*/ opMode.gamepad2.right_bumper || autoFarLaunch) {
+        if (opMode.gamepad2.right_bumper || autoFarLaunch) {
             //Set power to zero when the right trigger 2 is not pressed down
             power = FAR_LAUNCHER_SPEED;
             hoodAngle = FAR_HOOD_ANGLE;
+        }
+
+        if (opMode.gamepad2.left_trigger > 0) {
+            //TODO Tune these values
+            //Set power to zero when the right trigger 2 is not pressed down
+            power = CLOSE_LAUNCHER_SPEED;
+            hoodAngle = CLOSE_HOOD_ANGLE;
         }
 
         this.flywheelMotor.setPower(power);

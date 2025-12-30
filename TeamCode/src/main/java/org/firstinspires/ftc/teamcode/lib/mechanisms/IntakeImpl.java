@@ -33,7 +33,7 @@ public class IntakeImpl implements Runnable, Intake {
                 this.motor.setDirection(DcMotorSimple.Direction.FORWARD);
                 this.motor.setPower(POWER);
 
-            } else if(this.opMode.gamepad2.left_bumper) {
+            } else if(this.opMode.gamepad2.y) {
                 this.motor.setDirection(DcMotorSimple.Direction.REVERSE);
                 this.motor.setPower(POWER);
 
