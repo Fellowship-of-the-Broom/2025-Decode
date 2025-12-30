@@ -18,8 +18,8 @@ public class LauncherImpl implements Runnable, Launcher {
     private static final double FAR_LAUNCHER_SPEED = 0.700;
     private static final double FAR_HOOD_ANGLE =  0.1;
 
-    private static final double CLOSE_LAUNCHER_SPEED = 0.700;
-    private static final double CLOSE_HOOD_ANGLE =  0.1;
+    private static final double CLOSE_LAUNCHER_SPEED = 0.2333;
+    private static final double CLOSE_HOOD_ANGLE =  0.1157;
     public static final double MINIMUM_HOOD_ANGLE = 0.0790;
     public static final double MAXIMUM_HOOD_ANGLE = 0.1157;
     private final Telemetry telemetry;
