@@ -124,13 +124,16 @@ public class Robot implements Runnable{
 
         this.chassis.moveRobot(1, 0,0);
         autoSleep(1000);
-        this.chassis.moveRobot(0,-1 * strafeMultiplier,0);
-        autoSleep(500);
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(200);
 
         //Turn to see april tag
 
         this.chassis.moveRobot(0,0,-0.5 * turnMultiplier);
         autoSleep(100);
+
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(200);
 
         // Start Launcher
 
@@ -143,6 +146,11 @@ public class Robot implements Runnable{
         aprilTag.autoAprilTagDetect = true;
         autoSleep(10000);
         aprilTag.autoAprilTagDetect = false;
+
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(200);
+
+        //launch
 
         ((TransferSystemImpl)transferSystem).autoOpen = true;
         autoSleep(175);

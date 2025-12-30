@@ -15,8 +15,8 @@ public class LauncherImpl implements Runnable, Launcher {
     private static final double ANGLE_3FT = 0.1;
     private static final double SPEED_3FT = 1;
     private static final double manualIncrementQuotient = 165; //Divides
-    private static final double FAR_LAUNCHER_SPEED = 0.700;
-    private static final double FAR_HOOD_ANGLE =  0.1;
+    private static final double FAR_LAUNCHER_SPEED = 0.7000;
+    private static final double FAR_HOOD_ANGLE =  0.1000;
 
     private static final double CLOSE_LAUNCHER_SPEED = 0.2333;
     private static final double CLOSE_HOOD_ANGLE =  0.1157;
