@@ -166,6 +166,6 @@ public class Robot implements Runnable{
 
     @Override
     public void run() {
-        //TODO APRIL TAGS!!!!
+        start();
     }
 }
