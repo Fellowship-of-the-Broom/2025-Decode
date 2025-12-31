@@ -99,7 +99,7 @@ public class LauncherImpl implements Runnable, Launcher {
             hoodAngle = FAR_HOOD_ANGLE;
         }
 
-        if (opMode.gamepad2.left_trigger > 0) {
+        if (opMode.gamepad2.left_bumper) {
             //TODO Tune these values
             //Set power to zero when the right trigger 2 is not pressed down
             power = CLOSE_LAUNCHER_SPEED;
