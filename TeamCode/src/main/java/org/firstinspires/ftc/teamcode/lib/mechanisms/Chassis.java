@@ -129,7 +129,11 @@ public class Chassis implements Runnable {
         frontRightDrive.setPower(frontRightPower);
         backLeftDrive.setPower(backLeftPower);
         backRightDrive.setPower(backRightPower);
+
+        telemetry.addData("FL Power:", frontLeftPower);
     }
+
+
 
     public final void sleep(long milliseconds) {
         try {

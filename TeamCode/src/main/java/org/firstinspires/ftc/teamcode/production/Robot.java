@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.AprilTag;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.AutoGateState;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.Chassis;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeIntakeImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeLauncherImpl;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.lib.mechanisms.LauncherImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystem;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystemImpl;
 
-public class Robot {
+public class Robot implements Runnable{
 
     private final LinearOpMode opMode;
     private final Chassis chassis;
@@ -28,6 +29,7 @@ public class Robot {
     private final Intake intake;
     private final TransferSystem transferSystem;
     private final AllianceColor allianceColor;
+    private boolean runChassis = true;
 
 
     public Robot(LinearOpMode opMode, boolean useReal, AllianceColor allianceColor){
@@ -38,6 +40,8 @@ public class Robot {
 
         aprilTag = new AprilTag (opMode);
         chassis = new Chassis (opMode, aprilTag);
+
+        //TODO reverse intake to correct directions (not in this file tho)
         if (useReal) {
             intake = new IntakeImpl(opMode);
             launcher = new LauncherImpl(opMode);
@@ -64,9 +68,14 @@ public class Robot {
 //        chassis.start():
         while (this.opMode.opModeIsActive()){
             intake.run();
-            chassis.run();
+
+            if(runChassis){
+                chassis.run();
+            }
+
             launcher.run();
             transferSystem.run();
+
 
             try {
                 Thread.sleep(50);
@@ -76,6 +85,8 @@ public class Robot {
         }
 
     }
+
+
     public void autoSleep(long timeMS){
         try {
             Thread.sleep(timeMS);
@@ -83,37 +94,90 @@ public class Robot {
             //throw new RuntimeException(e);
         }
     }
+
+    double strafeMultiplier = 1;
+    double turnMultiplier = 1;
+
     public void rollout() {
-        this.chassis.moveRobot(0, .5,0);
-        autoSleep(1000);
-        this.chassis.moveRobot(0,0,0);
-    }
-
-    public void autoMoveToAprilTagAndScore() {
-
-        //Defaults to blue alliance values
-        double strafeMultiplier = 1;
-        double turnMultiplier = 1;
 
         if(allianceColor == AllianceColor.RED_ALLIANCE){
             strafeMultiplier = -1;
             turnMultiplier = -1;
         }
+        
+
+        this.chassis.moveRobot(1, 0,0);
+        autoSleep(300);
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(200);
+        this.chassis.moveRobot(0,-1 * strafeMultiplier,0);
+        autoSleep(500);
+    }
+
+    public void autoMoveToAprilTagAndScore() {
+
+        //Defaults to blue alliance values
+
         //TODO Tune these values
         
         // Move forward to see april tag
-        this.chassis.moveRobot(1, 0,turnMultiplier * 1);
-        autoSleep(1000);
-        this.chassis.moveRobot(0,0,0);
 
-        // Turn to see april tag
+        runChassis = false;
+
+        this.chassis.moveRobot(-0.5, 0,0);
+        autoSleep(1500);
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(500);
+
+        //Turn to see april tag
+
+        this.chassis.moveRobot(0,0,1 * turnMultiplier);
+        autoSleep(100);
+
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(500);
+
+        // Start Launcher
+
+        ((LauncherImpl)launcher).autoFarLaunch = true;
+
         // Detect april tag & drive to it
-        // Start launcher flywheel (and wait like ~3s)
-        // (Open gate
-        // Wait
-        // Close gate
-        // Wait ) x3
-        // Stop flywheel
+
+        runChassis = true;
+
+        aprilTag.autoAprilTagDetect = true;
+        autoSleep(10000);
+        aprilTag.autoAprilTagDetect = false;
+
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(500);
+
+        //launch
+
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+        autoSleep(175);
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+        autoSleep(1000);
+
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+        autoSleep(175);
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+        autoSleep(1000);
+
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+        autoSleep(175);
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+        autoSleep(1000);
+
+
+
+        ((LauncherImpl)launcher).autoFarLaunch = false;
+
         // Possibly move back to start and/or out of the way
+    }
+
+    @Override
+    public void run() {
+        start();
     }
 }
