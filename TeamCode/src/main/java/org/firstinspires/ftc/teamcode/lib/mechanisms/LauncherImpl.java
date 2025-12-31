@@ -18,11 +18,12 @@ public class LauncherImpl implements Runnable, Launcher {
     private static final double FAR_LAUNCHER_SPEED = 0.7000;
     private static final double FAR_HOOD_ANGLE =  0.1000;
 
-    private static final double CLOSE_LAUNCHER_SPEED = 0.45;
-    private static final double CLOSE_HOOD_ANGLE =  0.0820;
+    private static final double CLOSE_LAUNCHER_SPEED = 0.6;
+    private static final double CLOSE_HOOD_ANGLE =  0.0850;
     public static final double MINIMUM_HOOD_ANGLE = 0.0790;
     public static final double MAXIMUM_HOOD_ANGLE = 0.1157;
     private final Telemetry telemetry;
+    private AprilTag aprilTag = null;
     private LinearOpMode opMode = null;
     private DcMotor flywheelMotor = null;
    // private DcMotorEx flywheelMotor = null;
@@ -32,10 +33,11 @@ public class LauncherImpl implements Runnable, Launcher {
     private double triggerThreshold = 0.8;
     public boolean autoFarLaunch;
 
-    public LauncherImpl(LinearOpMode opMode) {
+    public LauncherImpl(LinearOpMode opMode, AprilTag aprilTag) {
 
         this.opMode = opMode;
         this.telemetry = opMode.telemetry;
+        this.aprilTag = aprilTag;
 
         this.flywheelMotor = opMode.hardwareMap.get(DcMotor.class, "flywheelMotor");
         this.flywheelMotor = opMode.hardwareMap.get(DcMotorEx.class, "flywheelMotor");
@@ -52,6 +54,11 @@ public class LauncherImpl implements Runnable, Launcher {
 
     @Override
     public void run() {
+        // Adjusting launcher based on april tags
+        double distanceValue = aprilTag.getDistanceValue();
+        double currentHoodAngle = ((FAR_HOOD_ANGLE-CLOSE_HOOD_ANGLE)*distanceValue)+CLOSE_HOOD_ANGLE;
+        double currentLauncherSpeed = ((FAR_LAUNCHER_SPEED-CLOSE_LAUNCHER_SPEED)*distanceValue)+CLOSE_LAUNCHER_SPEED;
+
         // while (this.opMode.opModeIsActive()) {
 
         // Flywheel motor
@@ -66,18 +73,19 @@ public class LauncherImpl implements Runnable, Launcher {
         } else if (this.opMode.gamepad2.right_trigger > 0 && this.opMode.gamepad2.right_trigger > triggerThreshold) {
             power = MANUAL_SPEED_HIGH;
         } else {
-            power = 0;
+            power = currentLauncherSpeed;
         }
 
         if (opMode.gamepad2.left_stick_y != 0) {
             hoodAngle = hoodServo.getPosition() + (opMode.gamepad2.left_stick_y / manualIncrementQuotient);
             hoodAngle = Math.max(hoodAngle, MINIMUM_HOOD_ANGLE);
             hoodAngle = Math.min(hoodAngle, MAXIMUM_HOOD_ANGLE);
+
             //.079 Max
             //.0.1157 Min
-
-
-
+        }
+        else {
+            hoodAngle = currentHoodAngle;
         }
 
 
@@ -122,5 +130,8 @@ public class LauncherImpl implements Runnable, Launcher {
 
 
     }
+
+
+
 }
 //}

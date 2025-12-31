@@ -44,7 +44,7 @@ public class Robot implements Runnable{
         //TODO reverse intake to correct directions (not in this file tho)
         if (useReal) {
             intake = new IntakeImpl(opMode);
-            launcher = new LauncherImpl(opMode);
+            launcher = new LauncherImpl(opMode, aprilTag);
             transferSystem = new TransferSystemImpl(opMode);
         }
         else {

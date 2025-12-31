@@ -24,9 +24,10 @@ public class AprilTag {
     Heading =
     Yaw =
      */
-    final double DESIRED_DISTANCE = 132.5; // this is how close the camera should get to the target (inches)
-    final double DESIRED_HEADING = -2; // Defaults are for Blue alliance
-    final double DESIRED_YAW = 21;
+    final double DESIRED_DISTANCE = 127.6; // this is how close the camera should get to the target (inches)
+    final double DESIRED_HEADING = -5; // Defaults are for Blue alliance
+    final double DESIRED_YAW = 17.5;
+    final double CLOSE_DISTANCE = 6;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -48,6 +49,9 @@ public class AprilTag {
 
     private AprilTagDetection desiredTag;
     public boolean autoAprilTagDetect;
+    private double currentDistance;
+
+
 
     public AprilTag(LinearOpMode opMode){
         this.hardwareMap = opMode.hardwareMap;
@@ -130,6 +134,9 @@ public class AprilTag {
             double rangeError = -(targetTag.ftcPose.range - DESIRED_DISTANCE);
             double headingError = (targetTag.ftcPose.bearing - DESIRED_HEADING);
             double yawError = -(targetTag.ftcPose.yaw - DESIRED_YAW);
+            currentDistance = targetTag.ftcPose.range;
+
+
 
 
             if(allianceColor == AllianceColor.RED_ALLIANCE){
@@ -224,4 +231,12 @@ public class AprilTag {
             Thread.currentThread().interrupt();
         }
     }
+     public double getDistanceValue () {
+       double distancePercent = (currentDistance-CLOSE_DISTANCE)/(DESIRED_DISTANCE-CLOSE_DISTANCE) ;
+         distancePercent = Math.max(distancePercent,CLOSE_DISTANCE);
+         distancePercent = Math.min(distancePercent, DESIRED_DISTANCE);
+         return distancePercent;
+
+
+     }
 }
