@@ -24,9 +24,9 @@ public class AprilTag {
     Heading =
     Yaw =
      */
-    final double DESIRED_DISTANCE = 130.8; // this is how close the camera should get to the target (inches)
-    final double DESIRED_HEADING = 4; // Defaults are for Blue alliance
-    final double DESIRED_YAW = 20;
+    final double DESIRED_DISTANCE = 132.5; // this is how close the camera should get to the target (inches)
+    final double DESIRED_HEADING = -2; // Defaults are for Blue alliance
+    final double DESIRED_YAW = 21;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -109,20 +109,21 @@ public class AprilTag {
             targetFound = true;
         }
 
-
-
         // Tell the driver what we see, and what to do.
         if (targetFound) {
             //telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
             //telemetry.addData("Found", "ID %d (%s)", targetTag.id, targetTag.metadata.name);
-            telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range); //130.3
-            telemetry.addData("Heading", "%3.0f degrees", targetTag.ftcPose.bearing); //4
-            telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);//28
-            telemetry.update();
+
         } else {
             //telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
         }
 
+        if(targetTag!=null) {
+            telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range); //130.3
+            telemetry.addData("Heading", "%3.0f degrees", targetTag.ftcPose.bearing); //4
+            telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);//28
+            telemetry.update();
+        }
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
         if (targetFound) {
 

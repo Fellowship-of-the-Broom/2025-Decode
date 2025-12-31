@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.AprilTag;
+import org.firstinspires.ftc.teamcode.lib.mechanisms.AutoGateState;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.Chassis;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeIntakeImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.FakeLauncherImpl;
@@ -103,6 +104,7 @@ public class Robot implements Runnable{
             strafeMultiplier = -1;
             turnMultiplier = -1;
         }
+        
 
         this.chassis.moveRobot(1, 0,0);
         autoSleep(300);
@@ -122,18 +124,18 @@ public class Robot implements Runnable{
 
         runChassis = false;
 
-        this.chassis.moveRobot(1, 0,0);
-        autoSleep(1000);
+        this.chassis.moveRobot(-0.5, 0,0);
+        autoSleep(1500);
         this.chassis.moveRobot(0, 0,0);
-        autoSleep(200);
+        autoSleep(500);
 
         //Turn to see april tag
 
-        this.chassis.moveRobot(0,0,-0.5 * turnMultiplier);
+        this.chassis.moveRobot(0,0,1 * turnMultiplier);
         autoSleep(100);
 
         this.chassis.moveRobot(0, 0,0);
-        autoSleep(200);
+        autoSleep(500);
 
         // Start Launcher
 
@@ -148,24 +150,26 @@ public class Robot implements Runnable{
         aprilTag.autoAprilTagDetect = false;
 
         this.chassis.moveRobot(0, 0,0);
-        autoSleep(200);
+        autoSleep(500);
 
         //launch
 
-        ((TransferSystemImpl)transferSystem).autoOpen = true;
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(175);
-        ((TransferSystemImpl)transferSystem).autoOpen = false;
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
         autoSleep(1000);
 
-        ((TransferSystemImpl)transferSystem).autoOpen = true;
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(175);
-        ((TransferSystemImpl)transferSystem).autoOpen = false;
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
         autoSleep(1000);
 
-        ((TransferSystemImpl)transferSystem).autoOpen = true;
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(175);
-        ((TransferSystemImpl)transferSystem).autoOpen = false;
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
         autoSleep(1000);
+
+
 
         ((LauncherImpl)launcher).autoFarLaunch = false;
 
