@@ -73,7 +73,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  */
 
 @Autonomous(name="BLUE AprilTag Launch", group = "Concept")
-public class AutoOneBlue extends LinearOpMode
+public class AutoFarLaunch extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
 
