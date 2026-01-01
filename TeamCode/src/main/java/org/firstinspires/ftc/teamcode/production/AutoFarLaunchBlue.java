@@ -72,7 +72,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  *
  */
 
-@Autonomous(name="RED AprilTag Launch", group = "Concept")
+@Autonomous(name="RED AprilTag Far Launch", group = "Concept")
 public class AutoFarLaunch extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
@@ -90,7 +90,7 @@ public class AutoFarLaunch extends LinearOpMode
         Thread opModeLoop = new Thread(robot);
 
         opModeLoop.start();
-        robot.autoMoveToAprilTagAndScore();
+        robot.autoFarLaunch();
     }
 
 

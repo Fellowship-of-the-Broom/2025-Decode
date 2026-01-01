@@ -32,7 +32,7 @@ public class AprilTag {
     double finalDesiredYaw = 0;
     
     
-    //Changes in the (physical) chassis change these values due to small differences in how the wheels move
+    //Changes in the (physical) chassis change these values due to small differences in how the wheels move, so ajustment will be needed before competitions
     final double FAR_DESIRED_DISTANCE = 127.6; // this is how close the camera should get to the target (inches)
     final double FAR_DESIRED_HEADING = -5; // Defaults are for Blue alliance
     final double FAR_DESIRED_YAW = 17.5;
