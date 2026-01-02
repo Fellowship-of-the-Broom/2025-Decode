@@ -44,7 +44,7 @@ public class Robot implements Runnable{
         //TODO reverse intake to correct directions (not in this file tho)
         if (useReal) {
             intake = new IntakeImpl(opMode);
-            launcher = new LauncherImpl(opMode);
+            launcher = new LauncherImpl(opMode, aprilTag);
             transferSystem = new TransferSystemImpl(opMode);
         }
         else {
@@ -66,6 +66,11 @@ public class Robot implements Runnable{
 //        intake.start();
 //       // aprilTag.start();
 //        chassis.start():
+        if (allianceColor == AllianceColor.RED_ALLIANCE){
+            strafeMultiplier = -1;
+            turnMultiplier = -1;
+        }
+
         while (this.opMode.opModeIsActive()){
             intake.run();
 
@@ -84,6 +89,7 @@ public class Robot implements Runnable{
             }
         }
 
+
     }
 
 
@@ -98,10 +104,7 @@ public class Robot implements Runnable{
     double strafeMultiplier = 1;
     double turnMultiplier = 1;
 
-    if(allianceColor == AllianceColor.RED_ALLIANCE){
-            strafeMultiplier = -1;
-            turnMultiplier = -1;
-        }
+
 
     public void rollout() {
 
