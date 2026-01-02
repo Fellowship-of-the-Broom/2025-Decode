@@ -157,13 +157,17 @@ public class AprilTag {
             telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);//28
             telemetry.update();
         }
+
+        if (targetTag != null){
+            currentDistance = targetTag.ftcPose.range;
+        }
+
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
         if (targetFound) {
 
             double rangeError = -(targetTag.ftcPose.range - finalDesiredDistance);
             double headingError = (targetTag.ftcPose.bearing - finalDesiredHeading);
             double yawError = -(targetTag.ftcPose.yaw - finalDesiredYaw);
-            currentDistance = targetTag.ftcPose.range;
 
 
             if(allianceColor == AllianceColor.RED_ALLIANCE){
@@ -260,8 +264,9 @@ public class AprilTag {
     }
      public double getDistanceValue () {
        double distancePercent = (currentDistance-CLOSE_DISTANCE)/(FAR_DESIRED_DISTANCE-CLOSE_DISTANCE) ;
-         distancePercent = Math.max(distancePercent,CLOSE_DISTANCE);
-         distancePercent = Math.min(distancePercent, FAR_DESIRED_DISTANCE);
+//         distancePercent = Math.max(distancePercent,CLOSE_DISTANCE);
+//         distancePercent = Math.min(distancePercent, FAR_DESIRED_DISTANCE);
+         telemetry.addData("current distance", currentDistance);
          return distancePercent;
 
 
