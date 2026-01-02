@@ -268,8 +268,8 @@ public class AprilTag {
 
     public double getDistanceValue() {
         double distancePercent = (currentDistance - CLOSE_DISTANCE) / (FAR_DESIRED_DISTANCE - CLOSE_DISTANCE);
-        distancePercent = Math.max(distancePercent, CLOSE_DISTANCE);
-        distancePercent = Math.min(distancePercent, FAR_DESIRED_DISTANCE);
+        distancePercent = Math.max(distancePercent, 0);
+        distancePercent = Math.min(distancePercent, 1);
         telemetry.addData("current distance", currentDistance);
         return distancePercent;
 
