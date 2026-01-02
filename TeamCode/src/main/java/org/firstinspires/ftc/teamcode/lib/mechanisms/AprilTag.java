@@ -46,13 +46,13 @@ public class AprilTag {
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN  =  0.02  ;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  0.015 ;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
-    final double TURN_GAIN   =  0.01  ;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double SPEED_GAIN = 0.02;   //  Forward Speed Control "Gain". e.g. Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double STRAFE_GAIN = 0.015;   //  Strafe Speed Control "Gain".  e.g. Ramp up to 37% power at a 25 degree Yaw error.   (0.375 / 25.0)
+    final double TURN_GAIN = 0.01;   //  Turn Control "Gain".  e.g. Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_STRAFE= 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_STRAFE = 0.5;   //  Clip the strafing speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     private static final int TAG_BLUE = 20;
     private static final int TAG_RED = 24;
@@ -65,14 +65,14 @@ public class AprilTag {
     private double currentDistance = 0;
 
 
-
-    public AprilTag(LinearOpMode opMode){
+    public AprilTag(LinearOpMode opMode) {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
         this.opMode = opMode;
 
     }
-    public void init(AllianceColor allianceColor){
+
+    public void init(AllianceColor allianceColor) {
 
         this.allianceColor = allianceColor;
 
@@ -87,6 +87,7 @@ public class AprilTag {
         telemetry.addData(">", "Touch START to start OpMode");
         //telemetry.update();
     }
+
     public AprilTagValues checkAprilTag() {
         boolean targetFound = false;    // Set to true when an AprilTag target is detected
         double drive = 0;        // Desired forward power/speed (-1 to +1)
@@ -121,7 +122,7 @@ public class AprilTag {
         //Far launch
         AprilTagDetection targetTag = desiredTag;
         if ((opMode.gamepad1.right_bumper || autoAprilTagDetect) &&
-                (desiredTag != null)){
+                (desiredTag != null)) {
             targetFound = true;
 
             //Sets final desired positions for far launch
@@ -133,7 +134,7 @@ public class AprilTag {
         //Park
         //No april tag detection needed for parking
         if ((opMode.gamepad1.a) &&
-                (desiredTag != null)){
+                (desiredTag != null)) {
             targetFound = true;
 
             //Sets final desired positions for parking
@@ -151,14 +152,14 @@ public class AprilTag {
             //telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
         }
 
-        if(targetTag!=null) {
+        if (targetTag != null) {
             telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range); //130.3
             telemetry.addData("Heading", "%3.0f degrees", targetTag.ftcPose.bearing); //4
             telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);//28
             telemetry.update();
         }
 
-        if (targetTag != null){
+        if (targetTag != null) {
             currentDistance = targetTag.ftcPose.range;
         }
 
@@ -170,8 +171,8 @@ public class AprilTag {
             double yawError = -(targetTag.ftcPose.yaw - finalDesiredYaw);
 
 
-            if(allianceColor == AllianceColor.RED_ALLIANCE){
-              //rangeError = -(targetTag.ftcPose.range - finalDesiredDistance);
+            if (allianceColor == AllianceColor.RED_ALLIANCE) {
+                //rangeError = -(targetTag.ftcPose.range - finalDesiredDistance);
                 headingError = (targetTag.ftcPose.bearing + finalDesiredHeading);
                 yawError = -(targetTag.ftcPose.yaw + finalDesiredYaw);
             }
@@ -195,7 +196,7 @@ public class AprilTag {
         return new AprilTagValues(drive, strafe, turn);
     }
 
-    private void    setManualExposure(int exposureMS, int gain) {
+    private void setManualExposure(int exposureMS, int gain) {
         // Wait for the camera to be open, then use the controls
 
         if (visionPortal == null) {
@@ -222,13 +223,14 @@ public class AprilTag {
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 sleep(50);
             }
-            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+            exposureControl.setExposure((long) exposureMS, TimeUnit.MILLISECONDS);
             sleep(20);
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(gain);
             sleep(20);
         }
     }
+
     private void initAprilTag() {
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder().build();
@@ -255,6 +257,7 @@ public class AprilTag {
                     .build();
         }
     }
+
     public final void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -262,13 +265,14 @@ public class AprilTag {
             Thread.currentThread().interrupt();
         }
     }
-     public double getDistanceValue () {
-       double distancePercent = (currentDistance-CLOSE_DISTANCE)/(FAR_DESIRED_DISTANCE-CLOSE_DISTANCE) ;
-//         distancePercent = Math.max(distancePercent,CLOSE_DISTANCE);
-//         distancePercent = Math.min(distancePercent, FAR_DESIRED_DISTANCE);
-         telemetry.addData("current distance", currentDistance);
-         return distancePercent;
+
+    public double getDistanceValue() {
+        double distancePercent = (currentDistance - CLOSE_DISTANCE) / (FAR_DESIRED_DISTANCE - CLOSE_DISTANCE);
+        distancePercent = Math.max(distancePercent, CLOSE_DISTANCE);
+        distancePercent = Math.min(distancePercent, FAR_DESIRED_DISTANCE);
+        telemetry.addData("current distance", currentDistance);
+        return distancePercent;
 
 
-     }
+    }
 }
