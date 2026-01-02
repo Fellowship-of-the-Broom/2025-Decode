@@ -24,10 +24,23 @@ public class AprilTag {
     Heading =
     Yaw =
      */
-    final double DESIRED_DISTANCE = 127.6; // this is how close the camera should get to the target (inches)
-    final double DESIRED_HEADING = -5; // Defaults are for Blue alliance
-    final double DESIRED_YAW = 17.5;
+
+    //This might have to be changed like before every competition ): this is for the far launch position
+
+    double finalDesiredDistance = 0;
+    double finalDesiredHeading = 0;
+    double finalDesiredYaw = 0;
+
+
+    //Changes in the (physical) chassis change these values due to small differences in how the wheels move, so ajustment will be needed before competitions
+    final double FAR_DESIRED_DISTANCE = 127.6; // this is how close the camera should get to the target (inches)
+    final double FAR_DESIRED_HEADING = -5; // Defaults are for Blue alliance
+    final double FAR_DESIRED_YAW = 17.5;
     final double CLOSE_DISTANCE = 6;
+
+    final double PARK_DESIRED_DISTANCE = 127.6;
+    final double PARK_DESIRED_HEADING = -5;
+    final double PARK_DESIRED_YAW = 17.5;
 
     private final LinearOpMode opMode;
     private HardwareMap hardwareMap;
@@ -49,7 +62,7 @@ public class AprilTag {
 
     private AprilTagDetection desiredTag;
     public boolean autoAprilTagDetect;
-    private double currentDistance;
+    private double currentDistance = 0;
 
 
 
@@ -60,8 +73,6 @@ public class AprilTag {
 
     }
     public void init(AllianceColor allianceColor){
-
-
 
         this.allianceColor = allianceColor;
 
@@ -107,10 +118,28 @@ public class AprilTag {
             }
         }
 
+        //Far launch
         AprilTagDetection targetTag = desiredTag;
         if ((opMode.gamepad1.right_bumper || autoAprilTagDetect) &&
                 (desiredTag != null)){
             targetFound = true;
+
+            //Sets final desired positions for far launch
+            finalDesiredDistance = FAR_DESIRED_DISTANCE;
+            finalDesiredHeading = FAR_DESIRED_HEADING;
+            finalDesiredYaw = FAR_DESIRED_YAW;
+        }
+
+        //Park
+        //No april tag detection needed for parking
+        if ((opMode.gamepad1.a) &&
+                (desiredTag != null)){
+            targetFound = true;
+
+            //Sets final desired positions for parking
+            finalDesiredDistance = PARK_DESIRED_DISTANCE;
+            finalDesiredHeading = PARK_DESIRED_HEADING;
+            finalDesiredYaw = PARK_DESIRED_YAW;
         }
 
         // Tell the driver what we see, and what to do.
@@ -131,18 +160,16 @@ public class AprilTag {
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
         if (targetFound) {
 
-            double rangeError = -(targetTag.ftcPose.range - DESIRED_DISTANCE);
-            double headingError = (targetTag.ftcPose.bearing - DESIRED_HEADING);
-            double yawError = -(targetTag.ftcPose.yaw - DESIRED_YAW);
+            double rangeError = -(targetTag.ftcPose.range - finalDesiredDistance);
+            double headingError = (targetTag.ftcPose.bearing - finalDesiredHeading);
+            double yawError = -(targetTag.ftcPose.yaw - finalDesiredYaw);
             currentDistance = targetTag.ftcPose.range;
 
 
-
-
             if(allianceColor == AllianceColor.RED_ALLIANCE){
-              //rangeError = -(targetTag.ftcPose.range - DESIRED_DISTANCE);
-                headingError = (targetTag.ftcPose.bearing + DESIRED_HEADING);
-                yawError = -(targetTag.ftcPose.yaw + DESIRED_YAW);
+              //rangeError = -(targetTag.ftcPose.range - finalDesiredDistance);
+                headingError = (targetTag.ftcPose.bearing + finalDesiredHeading);
+                yawError = -(targetTag.ftcPose.yaw + finalDesiredYaw);
             }
 
 
@@ -232,9 +259,9 @@ public class AprilTag {
         }
     }
      public double getDistanceValue () {
-       double distancePercent = (currentDistance-CLOSE_DISTANCE)/(DESIRED_DISTANCE-CLOSE_DISTANCE) ;
+       double distancePercent = (currentDistance-CLOSE_DISTANCE)/(FAR_DESIRED_DISTANCE-CLOSE_DISTANCE) ;
          distancePercent = Math.max(distancePercent,CLOSE_DISTANCE);
-         distancePercent = Math.min(distancePercent, DESIRED_DISTANCE);
+         distancePercent = Math.min(distancePercent, FAR_DESIRED_DISTANCE);
          return distancePercent;
 
 

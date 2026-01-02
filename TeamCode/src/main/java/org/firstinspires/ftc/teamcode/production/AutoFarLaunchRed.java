@@ -72,8 +72,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  *
  */
 
-@Autonomous(name="BLUE AprilTag Launch", group = "Concept")
-public class AutoOneBlue extends LinearOpMode
+@Autonomous(name="RED AprilTag Far Launch", group = "Concept")
+public class AutoFarLaunchRed extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
 
@@ -83,14 +83,14 @@ public class AutoOneBlue extends LinearOpMode
     //Place the robot at x y etc...
 
     @Override public void runOpMode() {
-        Robot robot = new Robot(this, true, AllianceColor.BLUE_ALLIANCE);
-        robot.init(AllianceColor.BLUE_ALLIANCE);
+        Robot robot = new Robot(this, true, AllianceColor.RED_ALLIANCE);
+        robot.init(AllianceColor.RED_ALLIANCE);
         waitForStart();
 
         Thread opModeLoop = new Thread(robot);
 
         opModeLoop.start();
-        robot.autoMoveToAprilTagAndScore();
+        robot.autoFarLaunch();
     }
 
 

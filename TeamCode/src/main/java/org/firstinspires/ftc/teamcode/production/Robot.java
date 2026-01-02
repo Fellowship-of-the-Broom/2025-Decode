@@ -66,6 +66,11 @@ public class Robot implements Runnable{
 //        intake.start();
 //       // aprilTag.start();
 //        chassis.start():
+        if (allianceColor == AllianceColor.RED_ALLIANCE){
+            strafeMultiplier = -1;
+            turnMultiplier = -1;
+        }
+
         while (this.opMode.opModeIsActive()){
             intake.run();
 
@@ -84,6 +89,7 @@ public class Robot implements Runnable{
             }
         }
 
+
     }
 
 
@@ -98,13 +104,9 @@ public class Robot implements Runnable{
     double strafeMultiplier = 1;
     double turnMultiplier = 1;
 
-    public void rollout() {
 
-        if(allianceColor == AllianceColor.RED_ALLIANCE){
-            strafeMultiplier = -1;
-            turnMultiplier = -1;
-        }
-        
+
+    public void rollout() {
 
         this.chassis.moveRobot(1, 0,0);
         autoSleep(300);
@@ -114,7 +116,7 @@ public class Robot implements Runnable{
         autoSleep(500);
     }
 
-    public void autoMoveToAprilTagAndScore() {
+    public void autoFarLaunch() {
 
         //Defaults to blue alliance values
 
@@ -155,17 +157,17 @@ public class Robot implements Runnable{
         //launch
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(175);
+        autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
         autoSleep(1000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(175);
+        autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
         autoSleep(1000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(175);
+        autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
         autoSleep(1000);
 
@@ -174,6 +176,40 @@ public class Robot implements Runnable{
         ((LauncherImpl)launcher).autoFarLaunch = false;
 
         // Possibly move back to start and/or out of the way
+    }
+
+    public void autoCloseLaunch() {
+        
+        //TODO Tune these values
+        //TODO Make opMode that used this method
+        
+        //Slightly move away from the goal
+        this.chassis.moveRobot(-0.5, 0,0);
+        autoSleep(250);
+        this.chassis.moveRobot(0, 0,0);
+        autoSleep(500);
+
+        // Start Launcher
+        ((LauncherImpl)launcher).autoCloseLaunch = true;
+
+        //Launch x3
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+        autoSleep(250);
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+        autoSleep(1000);
+
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+        autoSleep(250);
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+        autoSleep(1000);
+
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+        autoSleep(250);
+        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+        autoSleep(1000);
+
+        ((LauncherImpl)launcher).autoCloseLaunch = false;
+
     }
 
     @Override

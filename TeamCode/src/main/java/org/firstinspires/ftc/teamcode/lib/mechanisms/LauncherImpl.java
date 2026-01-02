@@ -31,7 +31,11 @@ public class LauncherImpl implements Runnable, Launcher {
     private double power = 0;
     private double hoodAngle = 0;
     private double triggerThreshold = 0.8;
+    
+    //Auto "emulation"
     public boolean autoFarLaunch;
+    public boolean autoCloseLaunch;
+
 
     public LauncherImpl(LinearOpMode opMode, AprilTag aprilTag) {
 
@@ -107,7 +111,7 @@ public class LauncherImpl implements Runnable, Launcher {
             hoodAngle = FAR_HOOD_ANGLE;
         }
 
-        if (opMode.gamepad2.left_bumper) {
+        if (opMode.gamepad2.left_bumper || autoCloseLaunch) {
             //TODO Tune these values
             //Set power to zero when the right trigger 2 is not pressed down
             power = CLOSE_LAUNCHER_SPEED;
