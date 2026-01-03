@@ -159,12 +159,12 @@ public class Robot implements Runnable{
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
+        autoSleep(2000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
+        autoSleep(2000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
