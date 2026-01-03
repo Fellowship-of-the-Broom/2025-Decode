@@ -182,15 +182,19 @@ public class Robot implements Runnable{
         
         //TODO Tune these values
         //TODO Make opMode that used this method
+
+        runChassis = false;
         
         //Slightly move away from the goal
-        this.chassis.moveRobot(-0.5, 0,0);
-        autoSleep(250);
+        this.chassis.moveRobot(0.5, 0,0);
+        autoSleep(200);
         this.chassis.moveRobot(0, 0,0);
         autoSleep(500);
 
         // Start Launcher
         ((LauncherImpl)launcher).autoCloseLaunch = true;
+
+        autoSleep(3000);
 
         //Launch x3
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
