@@ -20,7 +20,12 @@ public class Chassis implements Runnable {
     private DcMotor backRightDrive = null;  //  Used to control the right back drive wheel
 
     private boolean driveBackwards = false;
-    private boolean lastButtonState1B = null;
+    private boolean lastButtonState1B = false;
+    public Chassis(LinearOpMode opMode, AprilTag aprilTag) {
+        this.hardwareMap = opMode.hardwareMap;
+        this.telemetry = opMode.telemetry;
+        this.opMode = opMode;
+        this.aprilTag = aprilTag;
     }
 
     public void init() {
@@ -62,8 +67,6 @@ public class Chassis implements Runnable {
     @Override
     public void run() {
 
-        lastButtonState1B = opMode.gamepad1.b;
-
         double drive = 0;        // Desired forward power/speed (-1 to +1)
         double strafe = 0;        // Desired strafe power/speed (-1 to +1)
         double turn = 0;        // Desired turning power/speed (-1 to +1)
@@ -74,9 +77,11 @@ public class Chassis implements Runnable {
         strafe = -opMode.gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
         turn = -opMode.gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
 
-        if (opMode.gamepad1.b && !lastButtonState1B) {
+        if ((opMode.gamepad1.b != lastButtonState1B) && opMode.gamepad1.b) {
             driveBackwards = !driveBackwards;
         }
+
+        lastButtonState1B = opMode.gamepad1.b;
          
         if (driveBackwards) {
             drive = -drive;
