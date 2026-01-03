@@ -76,8 +76,10 @@ public class LauncherImpl implements Runnable, Launcher {
             power = MANUAL_SPEED_LOW;
         } else if (this.opMode.gamepad2.right_trigger > 0 && this.opMode.gamepad2.right_trigger > triggerThreshold) {
             power = MANUAL_SPEED_HIGH;
-        } else {
+        } else if (this.opMode.gamepad2.b){
             power = currentLauncherSpeed;
+        } else {
+            power = 0;
         }
 
         if (opMode.gamepad2.left_stick_y != 0) {
@@ -87,8 +89,7 @@ public class LauncherImpl implements Runnable, Launcher {
 
             //.079 Max
             //.0.1157 Min
-        }
-        else {
+        } else if (this.opMode.gamepad2.b){
             hoodAngle = currentHoodAngle;
         }
 
@@ -123,6 +124,7 @@ public class LauncherImpl implements Runnable, Launcher {
 
         telemetry.addData("hoodAngle", hoodAngle);
         telemetry.addData("hoodservo", hoodServo.getPosition());
+        telemetry.addData("distance percent", distanceValue);
 //        telemetry.update();
         //yayayayaya good yes code josh waz here
 
