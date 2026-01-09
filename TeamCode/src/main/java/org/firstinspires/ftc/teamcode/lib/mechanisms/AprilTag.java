@@ -173,7 +173,7 @@ public class AprilTag {
 
             if (allianceColor == AllianceColor.RED_ALLIANCE) {
                 //rangeError = -(targetTag.ftcPose.range - finalDesiredDistance);
-                headingError = (targetTag.ftcPose.bearing + finalDesiredHeading);
+                headingError = (targetTag.ftcPose.bearing - 3);
                 yawError = -(targetTag.ftcPose.yaw + finalDesiredYaw);
             }
 

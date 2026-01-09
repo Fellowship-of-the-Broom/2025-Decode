@@ -12,7 +12,7 @@ public class TransferSystemImpl implements TransferSystem {
     private Servo transferGate;
     private GateStates gateState;
     private ElapsedTime timeElapsed = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-    private final double TIME_TO_CLOSE = 175;
+    private final double TIME_TO_CLOSE = 100;
     public AutoGateState autoGateOpen = AutoGateState.TELEOP_GATE;
 
 
