@@ -141,7 +141,7 @@ public class Robot implements Runnable{
         runChassis = true;
 
         aprilTag.autoAprilTagDetect = true;
-        autoSleep(10000);
+        autoSleep(5000);
         aprilTag.autoAprilTagDetect = false;
 
         autoResetMotor(500);
