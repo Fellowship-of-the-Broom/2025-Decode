@@ -101,6 +101,16 @@ public class Robot implements Runnable{
         }
     }
 
+    public void autoResetMotor(long timeMS){
+        chassis.moveRobot(0,0,0);
+        try {
+            Thread.sleep(timeMS);
+        } catch (InterruptedException e) {
+            //throw new RuntimeException(e);
+        }
+
+    }
+
     double strafeMultiplier = 1;
     double turnMultiplier = 1;
 
@@ -121,23 +131,6 @@ public class Robot implements Runnable{
         //Defaults to blue alliance values
 
         //TODO Tune these values
-        
-        // Move forward to see april tag
-
-        runChassis = false;
-
-        this.chassis.moveRobot(-0.5, 0,0);
-        autoSleep(1500);
-        this.chassis.moveRobot(0, 0,0);
-        autoSleep(500);
-
-        //Turn to see april tag
-
-        this.chassis.moveRobot(0,0,1 * turnMultiplier);
-        autoSleep(100);
-
-        this.chassis.moveRobot(0, 0,0);
-        autoSleep(500);
 
         // Start Launcher
 
@@ -148,23 +141,22 @@ public class Robot implements Runnable{
         runChassis = true;
 
         aprilTag.autoAprilTagDetect = true;
-        autoSleep(10000);
+        autoSleep(5000);
         aprilTag.autoAprilTagDetect = false;
 
-        this.chassis.moveRobot(0, 0,0);
-        autoSleep(500);
+        autoResetMotor(500);
 
         //launch
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
+        autoSleep(2000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
+        autoSleep(2000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
@@ -176,6 +168,14 @@ public class Robot implements Runnable{
         ((LauncherImpl)launcher).autoFarLaunch = false;
 
         // Possibly move back to start and/or out of the way
+
+        runChassis = false;
+
+        this.chassis.moveRobot(1,0,0);
+        autoSleep(500);
+        autoResetMotor(500);
+
+        runChassis = true;
     }
 
     public void autoCloseLaunch() {
@@ -187,9 +187,8 @@ public class Robot implements Runnable{
         
         //Slightly move away from the goal
         this.chassis.moveRobot(0.5, 0,0);
-        autoSleep(200);
-        this.chassis.moveRobot(0, 0,0);
-        autoSleep(500);
+        autoSleep(160);
+        autoResetMotor(500);
 
         // Start Launcher
         ((LauncherImpl)launcher).autoCloseLaunch = true;
@@ -200,12 +199,12 @@ public class Robot implements Runnable{
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
+        autoSleep(2000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
+        autoSleep(2000);
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
         autoSleep(250);
@@ -214,10 +213,31 @@ public class Robot implements Runnable{
 
         ((LauncherImpl)launcher).autoCloseLaunch = false;
 
+
+
+        runChassis = false;
+
+        autoResetMotor(500);
+
+        this.chassis.moveRobot(-1, 0,0);
+        autoSleep(500);
+        autoResetMotor(500);
+
+        this.chassis.moveRobot(0, -1 * strafeMultiplier,0);
+        autoSleep(500);
+
+        autoResetMotor(500);
+
+        runChassis = true;
+
     }
 
     @Override
     public void run() {
-        start();
+        try{
+            start();
+        }catch (Exception e){
+
+        }
     }
 }
