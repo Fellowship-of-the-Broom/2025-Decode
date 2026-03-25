@@ -149,20 +149,20 @@ public class Robot implements Runnable{
         //launch
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(250);
+        autoSleep(350);
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(2000);
+        autoSleep(3000);
+
+        for (int i = 0; i < 4; i++) {
+            // Code to be executed in each loop iteration
+            ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+            autoSleep(300);
+            ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+            autoSleep(3000);
+        }
 
         ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(250);
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(2000);
-
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(250);
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
-
+        autoSleep(4000);
 
 
         ((LauncherImpl)launcher).autoFarLaunch = false;
@@ -171,9 +171,13 @@ public class Robot implements Runnable{
 
         runChassis = false;
 
-        this.chassis.moveRobot(1,0,0);
-        autoSleep(500);
+//        this.chassis.moveRobot(-0.5,0,0);
+//        autoSleep(250);
+//        autoResetMotor(500);
+
         autoResetMotor(500);
+        this.chassis.moveRobot(0,-1 * strafeMultiplier,0);
+        autoSleep(1500);
 
         runChassis = true;
     }
@@ -187,7 +191,7 @@ public class Robot implements Runnable{
         
         //Slightly move away from the goal
         this.chassis.moveRobot(0.5, 0,0);
-        autoSleep(160);
+        autoSleep(200);
         autoResetMotor(500);
 
         // Start Launcher
@@ -195,21 +199,15 @@ public class Robot implements Runnable{
 
         autoSleep(3000);
 
-        //Launch x3
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(250);
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(2000);
+        //Launch 5x
+        for (int i = 0; i < 5; i++) {
+            // Code to be executed in each loop iteration
+            ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
+            autoSleep(300);
+            ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
+            autoSleep(3000);
+        }
 
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(250);
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(2000);
-
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_OPEN;
-        autoSleep(250);
-        ((TransferSystemImpl)transferSystem).autoGateOpen = AutoGateState.AUTO_GATE_CLOSE;
-        autoSleep(1000);
 
         ((LauncherImpl)launcher).autoCloseLaunch = false;
 
@@ -219,8 +217,8 @@ public class Robot implements Runnable{
 
         autoResetMotor(500);
 
-        this.chassis.moveRobot(-1, 0,0);
-        autoSleep(500);
+        this.chassis.moveRobot(0.75, 0,0);
+        autoSleep(250);
         autoResetMotor(500);
 
         this.chassis.moveRobot(0, -1 * strafeMultiplier,0);
