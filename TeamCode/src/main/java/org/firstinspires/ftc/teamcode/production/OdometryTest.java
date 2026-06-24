@@ -19,12 +19,16 @@ public class OdometryTest extends LinearOpMode {
 
         waitForStart();
 
+        GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+
+        //Set values to 0
+        pinpoint.resetPosAndIMU();
+
         while (opModeIsActive()) {
 
             drive.update();
-            GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
-//            Pose2d pose = drive.getPoseEstimate();
+            Pose2d pose = drive.getPoseEstimate();
 
 //            telemetry.addData("x ticks", pose.getX());
 //            telemetry.addData("y ticks", pose.getY());
@@ -35,7 +39,7 @@ public class OdometryTest extends LinearOpMode {
 
             telemetry.addData("x in", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("y in", pinpoint.getPosY(DistanceUnit.INCH));
-            telemetry.addData("heading (deg)", Math.toDegrees(pinpoint.getHeading(AngleUnit.DEGREES)));
+            telemetry.addData("heading (deg)", pinpoint.getHeading(AngleUnit.DEGREES));
             telemetry.update();
         }
     }
