@@ -22,6 +22,7 @@ public class PinpointLocalizer implements Localizer {
 
     public PinpointLocalizer(HardwareMap hardwareMap) {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        pinpoint.resetPosAndIMU();
     }
 
     @NonNull
@@ -48,6 +49,7 @@ public class PinpointLocalizer implements Localizer {
         // Pull fresh data from Pinpoint
         pinpoint.update();
 
+        // TODO Other place to tune values
         // ---- READ VALUES ----
         double x = pinpoint.getPosX(DistanceUnit.INCH);           // VERIFY UNITS
         double y = pinpoint.getPosY(DistanceUnit.INCH);           // VERIFY UNITS
@@ -64,10 +66,11 @@ public class PinpointLocalizer implements Localizer {
         // double correctedX = y;
         // double correctedY = -x;
 
-        double correctedX = x;
+        double correctedX = -x;
         double correctedY = y;
+        double correctedHeading = -heading;
 
-        poseEstimate = new Pose2d(correctedX, correctedY, heading);
+        poseEstimate = new Pose2d(correctedX, correctedY, correctedHeading);
 
 //        // ---- VELOCITY (optional but helpful) ----
 //        double vx = pinpoint.getVelocityX();
