@@ -73,6 +73,7 @@ public class Robot implements Runnable{
 //        intake.start();
 //       // aprilTag.start();
 //        chassis.start():
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
@@ -83,12 +84,6 @@ public class Robot implements Runnable{
 
         int i = 0;
 
-//            telemetry.addData("x ticks", pose.getX());
-//            telemetry.addData("y ticks", pose.getY());
-//            telemetry.addData("heading (deg)", Math.toDegrees(pose.getHeading()));
-//            telemetry.addData("x cm", (pose.getX()/1.9894));
-//            telemetry.addData("y cm", (pose.getY()/1.9894));
-//            telemetry.update();
 
         if (allianceColor == AllianceColor.RED_ALLIANCE){
             strafeMultiplier = -1;
@@ -118,6 +113,14 @@ public class Robot implements Runnable{
             }
 
             i++;
+
+            pinpoint.update();
+
+            telemetry.addData("pinpoint x ticks", pose.getX());
+            telemetry.addData("pinpoint y ticks", pose.getY());
+            telemetry.addData("pinpoint heading (deg)", Math.toDegrees(pose.getHeading()));
+//            telemetry.addData("x cm", (pose.getX()/1.9894));
+//            telemetry.addData("y cm", (pose.getY()/1.9894));
 
             telemetry.addData("x in", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("y in", pinpoint.getPosY(DistanceUnit.INCH));

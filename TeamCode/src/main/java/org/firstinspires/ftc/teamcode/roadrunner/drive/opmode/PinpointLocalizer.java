@@ -49,8 +49,8 @@ public class PinpointLocalizer implements Localizer {
         pinpoint.update();
 
         // ---- READ VALUES ----
-        double x = pinpoint.getXOffset(DistanceUnit.INCH);           // VERIFY UNITS
-        double y = pinpoint.getYOffset(DistanceUnit.INCH);           // VERIFY UNITS
+        double x = pinpoint.getPosX(DistanceUnit.INCH);           // VERIFY UNITS
+        double y = pinpoint.getPosY(DistanceUnit.INCH);           // VERIFY UNITS
         double heading = pinpoint.getHeading(AngleUnit.RADIANS); // should be radians
 
         // ---- UNIT CONVERSION (adjust if needed) ----

@@ -157,7 +157,7 @@ public class AprilTag {
             telemetry.addData("Range", "%5.1f inches", targetTag.ftcPose.range); //130.3
             telemetry.addData("Heading", "%3.0f degrees", targetTag.ftcPose.bearing); //4
             telemetry.addData("Yaw", "%3.0f degrees", targetTag.ftcPose.yaw);//28
-            telemetry.update();
+//            telemetry.update();
         }
 
         if (targetTag != null) {
