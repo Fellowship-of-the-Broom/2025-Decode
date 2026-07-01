@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.production;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.AprilTag;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.AutoGateState;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.Chassis;
@@ -16,6 +20,7 @@ import org.firstinspires.ftc.teamcode.lib.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.LauncherImpl;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystem;
 import org.firstinspires.ftc.teamcode.lib.mechanisms.TransferSystemImpl;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 
 public class Robot implements Runnable{
 
@@ -30,6 +35,7 @@ public class Robot implements Runnable{
     private final TransferSystem transferSystem;
     private final AllianceColor allianceColor;
     private boolean runChassis = true;
+
 
 
     public Robot(LinearOpMode opMode, boolean useReal, AllianceColor allianceColor){
@@ -61,17 +67,40 @@ public class Robot implements Runnable{
         aprilTag.init(allianceColor);
 
     }
+
     public void start(){
 //        launcher.start();
 //        intake.start();
 //       // aprilTag.start();
 //        chassis.start():
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+
+        pinpoint.resetPosAndIMU();
+
+
+
+        int i = 0;
+
+//            telemetry.addData("x ticks", pose.getX());
+//            telemetry.addData("y ticks", pose.getY());
+//            telemetry.addData("heading (deg)", Math.toDegrees(pose.getHeading()));
+//            telemetry.addData("x cm", (pose.getX()/1.9894));
+//            telemetry.addData("y cm", (pose.getY()/1.9894));
+//            telemetry.update();
+
         if (allianceColor == AllianceColor.RED_ALLIANCE){
             strafeMultiplier = -1;
             turnMultiplier = -1;
         }
 
         while (this.opMode.opModeIsActive()){
+
+            drive.update();
+
+            Pose2d pose = drive.getPoseEstimate();
+
             intake.run();
 
             if(runChassis){
@@ -87,6 +116,14 @@ public class Robot implements Runnable{
             } catch (InterruptedException e) {
                 //throw new RuntimeException(e);
             }
+
+            i++;
+
+            telemetry.addData("x in", pinpoint.getPosX(DistanceUnit.INCH));
+            telemetry.addData("y in", pinpoint.getPosY(DistanceUnit.INCH));
+            telemetry.addData("heading (deg)", pinpoint.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("i:", i);
+            telemetry.update();
         }
 
 

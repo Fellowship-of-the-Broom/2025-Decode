@@ -146,7 +146,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch START to start OpMode");
-        telemetry.update();
+//        telemetry.update();
         waitForStart();
 
         while (opModeIsActive())
@@ -208,7 +208,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
                 turn   = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
                 telemetry.addData("Manual","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
             }
-            telemetry.update();
+//            telemetry.update();
 
             // Apply desired axes motions to the drivetrain.
             moveRobot(drive, strafe, turn);
