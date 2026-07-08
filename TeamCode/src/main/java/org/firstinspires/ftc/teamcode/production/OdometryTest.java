@@ -15,7 +15,8 @@ public class OdometryTest extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
+
 
         waitForStart();
 
