@@ -28,20 +28,6 @@ public class StraightTest extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
-        drive.setPoseEstimate(new Pose2d(0, 0, 0));
-
-        drive.setDrivePower(new Pose2d(0.2, 0, 0));
-
-        sleep(2000);
-
-        drive.setDrivePower(new Pose2d(0, 0.2, 0));
-
-        sleep(2000);
-
-        drive.setDrivePower(new Pose2d(0, 0, 0.2));
-
-        sleep(2000);
-
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
@@ -56,12 +42,25 @@ public class StraightTest extends LinearOpMode {
 
         drive.followTrajectory(trajectory);
 
-//        GoBildaPinpointDriver pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        Pose2d pose = drive.getPoseEstimate();
+        Pose2d error = drive.getLastError();
 
-        Pose2d poseEstimate = drive.getPoseEstimate();
-        telemetry.addData("finalX", poseEstimate.getX());
-        telemetry.addData("finalY", poseEstimate.getY());
-        telemetry.addData("finalHeading", poseEstimate.getHeading());
+        telemetry.addData("Final X", pose.getX());
+        telemetry.addData("Final Y", pose.getY());
+        telemetry.addData("Final Heading", Math.toDegrees(pose.getHeading()));
+
+        telemetry.addData("Error X", error.getX());
+        telemetry.addData("Error Y", error.getY());
+        telemetry.addData("Error Heading", Math.toDegrees(error.getHeading()));
+
+        telemetry.update();
+
+        sleep(10000);   // Leave it on the screen for 10 seconds
+
+//        Pose2d poseEstimate = drive.getPoseEstimate();
+//        telemetry.addData("finalX", poseEstimate.getX());
+//        telemetry.addData("finalY", poseEstimate.getY());
+//        telemetry.addData("finalHeading", poseEstimate.getHeading());
 
 //        telemetry.addData("x in", pinpoint.getPosX(DistanceUnit.INCH));
 //        telemetry.addData("y in", pinpoint.getPosY(DistanceUnit.INCH));

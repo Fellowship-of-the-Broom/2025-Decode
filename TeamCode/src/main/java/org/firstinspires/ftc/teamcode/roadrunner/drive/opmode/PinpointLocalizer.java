@@ -38,8 +38,8 @@ public class PinpointLocalizer implements Localizer {
 
         Pose2D pinpointPose = new Pose2D(
                 DistanceUnit.INCH,
-                -pose.getX(),       // inverse of correctedX = -x
-                pose.getY(),
+                -pose.getX(),
+                -pose.getY(),
                 AngleUnit.RADIANS,
                 pose.getHeading()
         );
@@ -75,7 +75,7 @@ public class PinpointLocalizer implements Localizer {
         // double correctedY = -x;
 
         double correctedX = -x;
-        double correctedY = y;
+        double correctedY = -y;
         double correctedHeading = -heading;
 
         poseEstimate = new Pose2d(correctedX, correctedY, correctedHeading);
