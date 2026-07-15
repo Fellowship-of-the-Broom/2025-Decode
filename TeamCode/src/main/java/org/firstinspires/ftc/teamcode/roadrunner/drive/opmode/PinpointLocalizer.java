@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 // Replace with your actual driver import if different
 //import org.firstinspires.ftc.teamcode.hardware.GoBildaPinpointDriver;
@@ -33,10 +34,17 @@ public class PinpointLocalizer implements Localizer {
 
     @Override
     public void setPoseEstimate(@NonNull Pose2d pose) {
-        this.poseEstimate = pose;
+        poseEstimate = pose;
 
-        // Optional: reset Pinpoint's internal pose if supported
-        // pinpoint.setPosition(pose.getX(), pose.getY(), pose.getHeading());
+        Pose2D pinpointPose = new Pose2D(
+                DistanceUnit.INCH,
+                -pose.getX(),       // inverse of correctedX = -x
+                pose.getY(),
+                AngleUnit.RADIANS,
+                pose.getHeading()
+        );
+
+        pinpoint.setPosition(pinpointPose);
     }
 
     @Override

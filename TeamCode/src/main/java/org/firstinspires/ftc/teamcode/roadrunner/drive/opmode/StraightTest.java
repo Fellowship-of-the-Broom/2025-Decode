@@ -28,6 +28,20 @@ public class StraightTest extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap, telemetry);
 
+        drive.setPoseEstimate(new Pose2d(0, 0, 0));
+
+        drive.setDrivePower(new Pose2d(0.2, 0, 0));
+
+        sleep(2000);
+
+        drive.setDrivePower(new Pose2d(0, 0.2, 0));
+
+        sleep(2000);
+
+        drive.setDrivePower(new Pose2d(0, 0, 0.2));
+
+        sleep(2000);
+
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();
