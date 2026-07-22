@@ -64,7 +64,7 @@ import static java.lang.Thread.sleep;
 public class SampleMecanumDrive extends MecanumDrive {
 
     //TODO This is the place to tune stuff
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
