@@ -46,8 +46,7 @@ public class DriveConstants {
     public static double WHEEL_RADIUS = 2.04724; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
 
-    //Using trackwidthtuner: "Effective track width = 166.28 (SE = 37.297)"
-    public static double TRACK_WIDTH = 12.79528; // in
+    public static double TRACK_WIDTH = 12.19; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using

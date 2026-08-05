@@ -62,12 +62,42 @@ public class TrackWidthTuner extends LinearOpMode {
             drive.turnAsync(Math.toRadians(ANGLE));
 
             while (!isStopRequested() && drive.isBusy()) {
+                drive.update();
+
                 double heading = drive.getPoseEstimate().getHeading();
                 headingAccumulator += Angle.normDelta(heading - lastHeading);
                 lastHeading = heading;
 
-                drive.update();
+                telemetry.addData(
+                        "Accumulated heading deg",
+                        Math.toDegrees(headingAccumulator)
+                );
+                telemetry.addData(
+                        "Current heading deg",
+                        Math.toDegrees(heading)
+                );
+                telemetry.update();
+
             }
+
+            telemetry.addData("Trial", i + 1);
+            telemetry.addData(
+                    "Accumulated heading deg",
+                    Math.toDegrees(headingAccumulator)
+            );
+            telemetry.addData(
+                    "Final pose heading deg",
+                    Math.toDegrees(drive.getPoseEstimate().getHeading())
+            );
+            telemetry.addData(
+                    "Calculated track width",
+                    DriveConstants.TRACK_WIDTH
+                            * Math.toRadians(ANGLE)
+                            / headingAccumulator
+            );
+            telemetry.update();
+
+            sleep(3000);
 
             double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
             trackWidthStats.add(trackWidth);

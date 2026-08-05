@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.sequencesegment.TrajectorySegment;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -27,13 +29,24 @@ public class SplineTest extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(36, 24), 0)
+//        Working Example
+
+//        TrajectorySequence coolBeans = drive.trajectorySequenceBuilder(new Pose2d())
+//                .splineTo(new Vector2d(36, 24), 0)
+//                .waitSeconds(2.5)
+//                .lineToLinearHeading(new Pose2d (0,0,0))
+//                .waitSeconds(2.5)
+//                .splineToLinearHeading(new Pose2d(36, 24), 0)
+//                .waitSeconds(2.5)
+//                .splineToSplineHeading(new Pose2d (0,0), 0)
+//                .build();
+//        drive.followTrajectorySequence(coolBeans);
+
+        Trajectory toRedSquare = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(46, -35), 0)
                 .build();
 
-        drive.followTrajectory(traj);
-
-        sleep(5000);
+        drive.followTrajectory(toRedSquare);
 
     }
 }
