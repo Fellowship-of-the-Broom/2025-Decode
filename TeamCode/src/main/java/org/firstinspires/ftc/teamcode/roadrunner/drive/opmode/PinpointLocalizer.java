@@ -76,7 +76,7 @@ public class PinpointLocalizer implements Localizer {
 
         double correctedX = -x;
         double correctedY = -y;
-        double correctedHeading = -heading;
+        double correctedHeading = heading;
 
         poseEstimate = new Pose2d(correctedX, correctedY, correctedHeading);
 

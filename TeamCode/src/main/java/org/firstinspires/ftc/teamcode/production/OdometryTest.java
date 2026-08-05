@@ -41,7 +41,26 @@ public class OdometryTest extends LinearOpMode {
             telemetry.addData("x in", pinpoint.getPosX(DistanceUnit.INCH));
             telemetry.addData("y in", pinpoint.getPosY(DistanceUnit.INCH));
             telemetry.addData("heading (deg)", pinpoint.getHeading(AngleUnit.DEGREES));
+            telemetry.addData("getWheelPositions", drive.getWheelPositions());
+
+
+            Pose2d rrPose = drive.getPoseEstimate();
+            Pose2d error = drive.getLastError();
+
+            telemetry.addData(
+                    "Pinpoint raw heading",
+                    pinpoint.getHeading(AngleUnit.DEGREES)
+            );
+            telemetry.addData(
+                    "RR heading",
+                    Math.toDegrees(rrPose.getHeading())
+            );
+            telemetry.addData(
+                    "RR heading error",
+                    Math.toDegrees(error.getHeading())
+            );
             telemetry.update();
+
         }
     }
 }
