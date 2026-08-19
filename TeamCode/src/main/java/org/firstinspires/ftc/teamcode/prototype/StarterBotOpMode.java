@@ -29,10 +29,10 @@
 
 package org.firstinspires.ftc.teamcode.prototype;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -58,6 +58,8 @@ public class StarterBotOpMode extends LinearOpMode {
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor intakeMotor = null;
+    private Servo leftWheel = null;
+    private Servo rightWheel = null;
 
     @Override
     public void runOpMode() {
@@ -70,6 +72,8 @@ public class StarterBotOpMode extends LinearOpMode {
         leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
+        leftWheel = hardwareMap.get(Servo.class, "left_wheel");
+        rightWheel = hardwareMap.get(Servo.class, "right_wheel");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -95,7 +99,8 @@ public class StarterBotOpMode extends LinearOpMode {
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
-            double intake = gamepad1.left_trigger;
+            double intake = gamepad2.left_trigger;
+            double servoSpeed = gamepad2.right_trigger;
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
@@ -108,6 +113,12 @@ public class StarterBotOpMode extends LinearOpMode {
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             intakeMotor.setPower(intake);
+
+            leftWheel.setDirection(Servo.Direction.FORWARD);
+            rightWheel.setDirection(Servo.Direction.REVERSE);
+            leftWheel.setPosition(servoSpeed);
+            rightWheel.setPosition(servoSpeed);
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
